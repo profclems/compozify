@@ -3,9 +3,10 @@ package parser
 import (
 	"errors"
 	"fmt"
-	"gopkg.in/yaml.v3"
 	"strconv"
 	"strings"
+
+	"gopkg.in/yaml.v3"
 )
 
 var (

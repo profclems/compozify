@@ -5,6 +5,8 @@ import (
 	"github.com/profclems/composeify/internal/commands"
 	"github.com/profclems/composeify/internal/version"
 	"github.com/rs/zerolog"
+	"os"
+	"time"
 )
 
 func main() {
@@ -12,15 +14,21 @@ func main() {
 	logger := newLogger()
 
 	cmd := commands.NewRootCmd(logger, version.GetVersion())
-	err := cmd.ExecuteContext(context.Background())
-	if err != nil {
-		logger.Fatal().Err(err).Msg("failed to run")
+	cmd.SetOut(os.Stdout)
+	cmd.SetErr(os.Stderr)
+
+	if err := cmd.ExecuteContext(context.Background()); err != nil {
+		os.Exit(1)
 	}
 }
 
 func newLogger() *zerolog.Logger {
-	out := zerolog.NewConsoleWriter()
-	logger := zerolog.New(out)
+	out := zerolog.NewConsoleWriter(func(w *zerolog.ConsoleWriter) {
+		w.Out = os.Stderr
+		w.TimeFormat = time.RFC3339
+	})
+
+	logger := zerolog.New(os.Stderr).With().Timestamp().Logger().Output(out)
 
 	zerolog.SetGlobalLevel(zerolog.InfoLevel)
 

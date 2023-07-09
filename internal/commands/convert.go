@@ -2,11 +2,13 @@ package commands
 
 import (
 	"fmt"
-	"github.com/profclems/composeify/pkg/parser"
-	"github.com/rs/zerolog"
-	"github.com/spf13/cobra"
 	"os"
 	"strings"
+
+	"github.com/rs/zerolog"
+	"github.com/spf13/cobra"
+
+	"github.com/profclems/composeify/pkg/parser"
 )
 
 var defaultFilename = "compose.yml"
@@ -62,27 +64,40 @@ $ compozify convert -w -- docker run -i -t --rm alpine
 	return cmd
 }
 
-func convertRun(opts *convertOpts) error {
+func convertRun(opts *convertOpts) (err error) {
+	log := opts.Logger
+
+	log.Info().Msg("Parsing Docker run command")
+	log.Debug().Msgf("Docker run command: %s", opts.Command)
+
 	parser, err := parser.NewParser(opts.Command)
 	if err != nil {
 		return err
 	}
 
+	log.Info().Msg("Generating Docker compose file")
 	err = parser.Parse()
 	if err != nil {
 		return err
 	}
+	log.Info().Msg("Docker compose file generated")
 
 	writer := os.Stdout
 	if opts.Write {
+		log.Info().Msgf("Writing to file %s", opts.OutFilePath)
 		writer, err = os.Create(opts.OutFilePath)
 		if err != nil {
 			return err
 		}
-		defer writer.Close()
+		defer func(writer *os.File) {
+			e := writer.Close()
+			if e != nil {
+				log.Error().Err(e).Msg("Error closing file")
+			}
+			err = e
+		}(writer)
 	}
-
 	fmt.Fprintf(writer, "%s", parser.String())
 
-	return nil
+	return err
 }
