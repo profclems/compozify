@@ -1,11 +1,13 @@
 package parser
 
 import (
-	"gopkg.in/yaml.v3"
 	"strconv"
 	"strings"
+
+	"gopkg.in/yaml.v3"
 )
 
+// Ulimit represents a docker run ulimit flag
 type Ulimit struct {
 	Name     string // name in docker-compose
 	Soft     int
@@ -13,10 +15,8 @@ type Ulimit struct {
 	NodeType FlagType
 }
 
-type Ulimits []*Ulimit
-
 // ParseUlimit converts docker run ulimit format to docker-compose ulimit format
-// into the Ulimit struct
+// into the Ulimit struct.
 func ParseUlimit(s string) (*Ulimit, error) {
 	ulimit := &Ulimit{}
 	ulimit.NodeType = MapType
@@ -55,8 +55,8 @@ func ParseUlimit(s string) (*Ulimit, error) {
 	return ulimit, nil
 }
 
-// YAML converts the Ulimit struct to a yaml.Node
-func (u *Ulimit) YAML() (key, value *yaml.Node) {
+// YAML converts the Ulimit struct to a yaml.Node.
+func (u *Ulimit) YAML() (key string, value *yaml.Node) {
 	value = &yaml.Node{
 		Kind: yaml.MappingNode,
 		Content: []*yaml.Node{
@@ -79,15 +79,12 @@ func (u *Ulimit) YAML() (key, value *yaml.Node) {
 		},
 	}
 
-	key = &yaml.Node{
-		Kind:  yaml.ScalarNode,
-		Value: u.Name,
-	}
+	key = u.Name
 
 	return key, value
 }
 
-// YAMLString converts the Ulimit struct to a yaml.Node and returns the string
+// YAMLString converts the Ulimit struct to a yaml.Node and returns the string.
 func (u *Ulimit) YAMLString() (string, error) {
 	key, value := u.YAML()
 	document := &yaml.Node{
@@ -96,7 +93,10 @@ func (u *Ulimit) YAMLString() (string, error) {
 			{
 				Kind: yaml.MappingNode,
 				Content: []*yaml.Node{
-					key,
+					{
+						Kind:  yaml.ScalarNode,
+						Value: key,
+					},
 					value,
 				},
 			},
@@ -107,26 +107,4 @@ func (u *Ulimit) YAMLString() (string, error) {
 		return "", err
 	}
 	return string(b), nil
-}
-
-// ParseUlimits converts docker run ulimit format to docker-compose ulimit format
-// into the Ulimits struct
-func ParseUlimits(s string) (Ulimits, error) {
-	ulimits := Ulimits{}
-
-	if s == "" {
-		return nil, errInvalidFlag
-	}
-
-	ulimitSplit := strings.Split(s, ",")
-	for _, ulimit := range ulimitSplit {
-		ulimit, err := ParseUlimit(ulimit)
-		if err != nil {
-			return nil, err
-		}
-
-		ulimits = append(ulimits, ulimit)
-	}
-
-	return ulimits, nil
 }

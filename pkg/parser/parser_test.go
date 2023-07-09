@@ -264,12 +264,11 @@ services:
         tty: true
         volumes:
             - type: tmpfs
-              destination: /tmp
-              tmpfs_opts:
-                  size: 100000000
-                  mode: 1777
+              target: /tmp
+              tmpfs:
+                size: 100000000
+                mode: 1777
         image: alpine
-		
 `,
 		},
 		{
@@ -333,6 +332,34 @@ services:
             - /tmp:/tmp:ro
         image: alpine
 `,
+		},
+		{
+			// TODO: The output of this should be fixed. When access mode is specified in the target of the mount,
+			// it should be added to the options of the mount. For instance target: /tmp:ro,z should be
+			// - target: /tmp
+			//   read_only: true
+			//   bind:
+			//     selinux: z
+			name:    "command with multiple mount using short syntax and --mount together",
+			command: `docker run -it --rm -v /tmp:/tmp:ro --mount type=bind,source=/tmp,target=/tmp:ro alpine`,
+			want: `version: "3.8"
+services:
+    alpine:
+        stdin_open: true
+        tty: true
+        volumes:
+            - /tmp:/tmp:ro
+            - type: bind
+              source: /tmp
+              target: /tmp:ro
+        image: alpine
+`,
+		},
+		{
+			name: "command with volume type mount with nocopy and volume options",
+			command: `docker run -it --rm \
+--mount type=volume,source=volume1,target=/tmp,volume-nocopy,volume-driver=local,volume-opt=type=nfs,volume-opt=device=:/tmp,volume-opt=o=addr=
+alpine`,
 		},
 	}
 

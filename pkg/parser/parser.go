@@ -15,6 +15,7 @@ var (
 	errSkipFlag    = errors.New("skip flag")
 )
 
+// Parser parses a docker run command into a docker compose file format.
 type Parser struct {
 	document *yaml.Node
 	version  string
@@ -26,10 +27,12 @@ type Parser struct {
 	yamlBytes []byte
 }
 
+// SetVersion sets the docker compose version.
 func (p *Parser) SetVersion(v string) {
 	p.version = v
 }
 
+// NewParser creates a new Parser.
 func NewParser(s string) (*Parser, error) {
 	s = strings.TrimPrefix(strings.TrimSpace(s), "docker run")
 	if s == "" {
@@ -98,6 +101,7 @@ func NewParser(s string) (*Parser, error) {
 	return p, nil
 }
 
+// Parse parses the docker run command into a docker compose file format.
 func (p *Parser) Parse() error {
 	var parseErr error
 	for {
@@ -165,7 +169,6 @@ func trimQuotes(s string) string {
 func (p *Parser) addNode(parent *yaml.Node, flag, key, value string, ftype FlagType) (*yaml.Node, error) {
 	kind := ftype.YamlKind()
 	valueNode := &yaml.Node{}
-	var keyNode *yaml.Node
 	mainKey := key
 
 	value = trimQuotes(value)
@@ -192,8 +195,13 @@ func (p *Parser) addNode(parent *yaml.Node, flag, key, value string, ftype FlagT
 			if err != nil {
 				return nil, err
 			}
-			keyNode, valueNode = ulimit.YAML()
-			key = keyNode.Value
+			key, valueNode = ulimit.YAML()
+		case MountType:
+			mount, err := ParseMount(value)
+			if err != nil {
+				return nil, err
+			}
+			key, valueNode = mount.YAML()
 		}
 	}
 

@@ -19,6 +19,7 @@ const (
 	UlimitType
 )
 
+// YamlKind returns the yaml.Kind for the flag type.
 func (f FlagType) YamlKind() yaml.Kind {
 	switch f {
 	case ArrayType, FileType:
@@ -52,6 +53,7 @@ type variables struct {
 	specialVars map[string]FlagType
 }
 
+// Get returns the docker flag for the variable.
 func (v *variables) Get(s string) *DockerFlag {
 	if dockerFlag, ok := v.vars[s]; ok {
 		if ref := dockerFlag.Reference; ref != "" {
@@ -89,6 +91,7 @@ func (v *variables) GetVarType(s string) FlagType {
 	return FlagType(0)
 }
 
+// newVariables returns a new variables struct.
 func newVariables() *variables {
 	vars := &variables{}
 

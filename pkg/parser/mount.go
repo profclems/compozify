@@ -1,46 +1,44 @@
 package parser
 
 import (
-	"gopkg.in/yaml.v3"
-	"strconv"
+	"reflect"
 	"strings"
+
+	"gopkg.in/yaml.v3"
 )
-
-type bindOpts struct {
-	Propagation    string
-	CreateHostPath bool
-	Selinux        bool
-}
-
-type volumeOpts struct {
-	NoCopy bool
-}
-
-type tmpfsOpts struct {
-	Size string
-	Mode string
-}
 
 // Mount represents a docker run mount flag
 type Mount struct {
-	Source      string
-	Target      string
-	Type        string
-	ReadOnly    bool
-	Consistency string
-	NodeType    FlagType
+	Type        string `name:"type" compose:"type" compose-type:"string"`
+	Source      string `name:"source" compose:"source" compose-type:"string"`
+	Target      string `name:"target" compose:"target" compose-type:"string"`
+	Readonly    string `name:"readonly" compose:"read_only" compose-type:"bool"`
+	Consistency string `name:"consistency" compose:"consistency" compose-type:"string"`
 
-	Bind   bindOpts
-	Volume volumeOpts
-	Tmpfs  tmpfsOpts
+	// bind-* options
+	BindPropagation    string `name:"bind-propagation" compose:"bind.propagation" compose-type:"string"`
+	BindCreatehostpath string `name:"-" compose:"bind.create_host_path" compose-type:"bool"`
+	BindSelinux        string `name:"-" compose:"bind.selinux" compose-type:"string"`
+
+	// TODO: properly support volume mounts
+	// volume-* options
+	VolumeNocopy string `name:"-" compose:"volume.nocopy" compose-type:"bool"`
+
+	// tmpfs-* options
+	TmpfsSize string `name:"tmpfs-size" compose:"tmpfs.size" compose-type:"string"`
+	TmpfsMode string `name:"tmpfs-mode" compose:"tmpfs.mode" compose-type:"string"`
 }
 
 // ParseMount converts docker run mount format to docker-compose mount format
 // into the Mount struct
 // mount value format: --mount type=bind,source=/tmp,target=/tmp,readonly
 func ParseMount(s string) (*Mount, error) {
+	altNames := map[string]string{
+		"src":         "Source",
+		"dst":         "Target",
+		"destination": "Target",
+	}
 	mount := &Mount{}
-	mount.NodeType = ArrayType
 
 	if s == "" {
 		return nil, errInvalidFlag
@@ -50,48 +48,41 @@ func ParseMount(s string) (*Mount, error) {
 
 	for _, s := range mountSplit {
 		split := strings.SplitN(s, "=", 2)
+
 		if len(split) < 1 {
 			return nil, errInvalidFlag
 		}
 
+		key := split[0]
+		if altName, ok := altNames[key]; ok {
+			key = altName
+		}
+
+		fieldName := strings.ToLower(key)
+		options := strings.Split(fieldName, "-")
+		if len(options) > 0 {
+			fieldName = ""
+			for len(options) > 0 {
+				str := strings.ToUpper(options[0][:1])
+				fieldName += str + options[0][1:]
+				options = options[1:]
+			}
+		}
+		mountElem := reflect.ValueOf(mount).Elem()
+
+		field := mountElem.FieldByName(fieldName)
 		if len(split) == 1 {
-			if split[0] == "readonly" {
-				mount.ReadOnly = true
+			f, ok := mountElem.Type().FieldByName(fieldName)
+			if ok && f.Tag.Get("compose-type") == "bool" { // TODO: read type tag
+				field.Set(reflect.ValueOf("true"))
 				continue
 			}
 			return nil, errInvalidFlag
 		}
 
-		switch split[0] {
-		case "type":
-			mount.Type = split[1]
-		case "source":
-			mount.Source = split[1]
-		case "target":
-			mount.Target = split[1]
-		case "readonly":
-			mount.ReadOnly = true
-		case "consistency":
-			mount.Consistency = split[1]
-		case "bind-propagation":
-			mount.Bind.Propagation = split[1]
-		case "volume-opt":
-			split2 := strings.SplitN(split[1], "=", 2)
-			if len(split2) < 1 {
-				return nil, errInvalidFlag
-			}
-			switch split2[0] {
-			case "nocopy":
-				val := true
-				if len(split) == 2 {
-					val, _ = strconv.ParseBool(split2[1])
-				}
-				mount.Volume.NoCopy = val
-			}
-		case "tmpfs-size":
-			mount.Tmpfs.Size = split[1]
-		case "tmpfs-mode":
-			mount.Tmpfs.Mode = split[1]
+		value := split[1]
+		if field.CanSet() {
+			field.Set(reflect.ValueOf(value))
 		}
 	}
 
@@ -99,89 +90,69 @@ func ParseMount(s string) (*Mount, error) {
 }
 
 // YAML converts the Mount struct to a yaml.Node
-func (m *Mount) YAML() (key, value *yaml.Node) {
+func (m *Mount) YAML() (key string, value *yaml.Node) {
 	value = &yaml.Node{
 		Kind:    yaml.MappingNode,
 		Content: []*yaml.Node{},
 	}
 
-	if m.Type != "" {
-		value.Content = append(value.Content,
-			&yaml.Node{
-				Kind:  yaml.ScalarNode,
-				Value: "type",
-			}, &yaml.Node{
-				Kind:  yaml.ScalarNode,
-				Value: m.Type,
-			},
-		)
-	}
+	mountElem := reflect.ValueOf(m).Elem()
+	mapNode := make(map[string]*yaml.Node)
 
-	if m.Source != "" {
-		value.Content = append(value.Content,
-			&yaml.Node{
-				Kind:  yaml.ScalarNode,
-				Value: "source",
-			}, &yaml.Node{
-				Kind:  yaml.ScalarNode,
-				Value: m.Source,
-			},
-		)
-	}
-
-	if m.Target != "" {
-		value.Content = append(value.Content,
-			&yaml.Node{
-				Kind:  yaml.ScalarNode,
-				Value: "target",
-			}, &yaml.Node{
-				Kind:  yaml.ScalarNode,
-				Value: m.Target,
-			},
-		)
-	}
-
-	if m.ReadOnly {
-		value.Content = append(value.Content,
-			&yaml.Node{
-				Kind:  yaml.ScalarNode,
-				Value: "readonly",
-			}, &yaml.Node{
-				Kind:  yaml.ScalarNode,
-				Value: strconv.FormatBool(m.ReadOnly),
-			},
-		)
-	}
-
-	if m.Consistency != "" {
-		value.Content = append(value.Content,
-			&yaml.Node{
-				Kind:  yaml.ScalarNode,
-				Value: "consistency",
-			}, &yaml.Node{
-				Kind:  yaml.ScalarNode,
-				Value: m.Consistency,
-			},
-		)
-	}
-
-	if m.Bind != (bindOpts{}) {
-		bindNode := &yaml.Node{
-			Kind:  yaml.ScalarNode,
-			Value: m.Bind.Propagation,
+	for i := 0; i < mountElem.NumField(); i++ {
+		field := mountElem.Field(i)
+		if !field.CanSet() {
+			continue
 		}
 
-		value.Content = append(value.Content,
-			&yaml.Node{
+		fieldName := mountElem.Type().Field(i).Name
+		if fieldName == "NodeType" {
+			continue
+		}
+
+		fieldTag := mountElem.Type().Field(i).Tag
+		fieldName = fieldTag.Get("compose")
+		if fieldName == "" {
+			fieldName = fieldTag.Get("name")
+		}
+
+		_ = fieldTag.Get("compose-type")
+
+		fieldValue := field.Interface()
+		if fieldValue == "" {
+			continue
+		}
+
+		fieldNameArr := strings.Split(fieldName, ".")
+		parent := value
+		for i := 0; i < len(fieldNameArr); i++ {
+			fieldName := fieldNameArr[i]
+			if i < len(fieldNameArr)-1 {
+				if p, ok := mapNode[fieldName]; ok {
+					parent = p
+					continue
+				}
+				parent = &yaml.Node{
+					Kind:    yaml.MappingNode,
+					Content: []*yaml.Node{},
+				}
+				value.Content = append(value.Content, &yaml.Node{
+					Kind:  yaml.ScalarNode,
+					Value: fieldName,
+				}, parent)
+				mapNode[fieldName] = parent
+				continue
+			}
+			fieldValueNode := &yaml.Node{
 				Kind:  yaml.ScalarNode,
-				Value: "bind",
-			}, bindNode,
-		)
-
-		if m.Bind.CreateHostPath {
-
+				Value: fieldValue.(string),
+			}
+			parent.Content = append(parent.Content, &yaml.Node{
+				Kind:  yaml.ScalarNode,
+				Value: fieldName,
+			}, fieldValueNode)
 		}
 	}
 
-	return key, value
+	return "", value
 }
