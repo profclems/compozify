@@ -259,17 +259,66 @@ services:
 alpine`,
 			want: `version: "3.8"
 services:
-	alpine:
-		stdin_open: true
-		tty: true
-		volumes:
-			- type: tmpfs
-			  destination: /tmp
-			  tmpfs_opts:
-				  size: 100000000
-				  mode: 1777
-		image: alpine
+    alpine:
+        stdin_open: true
+        tty: true
+        volumes:
+            - type: tmpfs
+              destination: /tmp
+              tmpfs_opts:
+                  size: 100000000
+                  mode: 1777
+        image: alpine
 		
+`,
+		},
+		{
+			name:    "command with -it flag",
+			command: `docker run -it --rm alpine`,
+			want: `version: "3.8"
+services:
+    alpine:
+        stdin_open: true
+        tty: true
+        image: alpine
+`,
+		},
+		{
+			name:    "command with -ti flag",
+			command: `docker run -ti --rm alpine`,
+			want: `version: "3.8"
+services:
+    alpine:
+        tty: true
+        stdin_open: true
+        image: alpine
+`,
+		},
+		{
+			name:    "command with shorthand flag with value attached",
+			command: `docker run -it --rm -p8080:80 alpine`,
+			want: `version: "3.8"
+services:
+    alpine:
+        stdin_open: true
+        tty: true
+        ports:
+            - 8080:80
+        image: alpine
+`,
+		},
+		{
+			name:    "command with multiple shorthand combined flags with value attached",
+			command: `docker run -itp8080:80 -p8081:8081 alpine`,
+			want: `version: "3.8"
+services:
+    alpine:
+        stdin_open: true
+        tty: true
+        ports:
+            - 8080:80
+            - 8081:8081
+        image: alpine
 `,
 		},
 	}

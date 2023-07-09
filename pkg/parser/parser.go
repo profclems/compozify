@@ -3,6 +3,7 @@ package parser
 import (
 	"errors"
 	"fmt"
+	"os"
 	"strconv"
 	"strings"
 
@@ -36,10 +37,15 @@ func NewParser(s string) (*Parser, error) {
 	}
 
 	p := &Parser{
-		command: strings.Fields(s),
 		version: composeVersion,
 		refs:    make(map[string]*yaml.Node),
 	}
+
+	command, err := parseArgs(s)
+	if err != nil {
+		return nil, fmt.Errorf("failed to parse docker run command: %w", err)
+	}
+	p.command = command
 
 	containerTitleNode := &yaml.Node{
 		Kind:  yaml.ScalarNode,
@@ -282,8 +288,6 @@ func (p *Parser) parseOneFlag() (string, string, error) {
 		return "", "", errInvalidFlag
 	}
 	numOfMinuses := 1
-	// TODO: if the flag is a shorthand and not a boolean the value can be directly
-	//  attached to the flag name like -p80:80 and -uroot
 	if f[1] == '-' {
 		numOfMinuses++
 
@@ -301,6 +305,25 @@ func (p *Parser) parseOneFlag() (string, string, error) {
 	// check if flag has value attached
 	value := ""
 	hasValue := false
+	if numOfMinuses == 1 && len(name) > 1 {
+		// if the flag is a shorthand and not a boolean the value can be directly
+		//  attached to the flag name like -p80:80 and -uroot
+		fmt.Fprintf(os.Stderr, "name: %s\n", name)
+		if name[1] != '=' {
+			fname := name[:1]
+			if ft := flagType(fname); ft != nil && *ft == BoolType {
+				p.command = append([]string{"-" + name[1:]}, p.command...)
+				name = fname
+				value = "true"
+				hasValue = true
+				fmt.Println("bool flag", name, value)
+			} else {
+				value = name[1:]
+				name = fname
+				hasValue = true
+			}
+		}
+	}
 	for i := 0; i < len(name); i++ {
 		if name[i] == '=' {
 			hasValue = true
@@ -311,7 +334,7 @@ func (p *Parser) parseOneFlag() (string, string, error) {
 	// check if flag is a boolean flag
 	if ft := flagType(name); ft != nil && *ft == BoolType {
 		if hasValue {
-			pv, err := strconv.ParseBool(name)
+			pv, err := strconv.ParseBool(value)
 			if err != nil {
 				return "", "", fmt.Errorf("invalid value %q for docker run flag %q: %s", value, name, err)
 			}
