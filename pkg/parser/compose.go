@@ -1,7 +1,6 @@
 package parser
 
 const (
-	composeVersion     = "3.9"
-	defaultFilename    = "compose.yml"
+	composeVersion     = "3.8"
 	defaultServiceName = "container1"
 )

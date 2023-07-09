@@ -17,3 +17,8 @@ go.work
 # IDE files
 .idea
 .vscode
+
+compose.yaml
+docker-compose.yaml
+docker-compose.yml
+compose.yml

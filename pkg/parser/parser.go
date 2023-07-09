@@ -8,11 +8,24 @@ import (
 	"strings"
 )
 
+var (
+	errNoMoreFlags = errors.New("no more flags available")
+	errInvalidFlag = errors.New("invalid docker run flag")
+	errSkipFlag    = errors.New("skip flag")
+)
+
 type Parser struct {
 	document *yaml.Node
+	version  string
 
 	refs    map[string]*yaml.Node
 	command []string
+
+	yamlBytes []byte
+}
+
+func (p *Parser) SetVersion(v string) {
+	p.version = v
 }
 
 func NewParser(s string) (*Parser, error) {
@@ -23,6 +36,7 @@ func NewParser(s string) (*Parser, error) {
 
 	p := &Parser{
 		command: strings.Fields(s),
+		version: composeVersion,
 		refs:    make(map[string]*yaml.Node),
 	}
 
@@ -56,7 +70,8 @@ func NewParser(s string) (*Parser, error) {
 					},
 					{
 						Kind:  yaml.ScalarNode,
-						Value: composeVersion,
+						Value: p.version,
+						Style: yaml.DoubleQuotedStyle,
 					},
 					{
 						Kind:  yaml.ScalarNode,
@@ -68,7 +83,7 @@ func NewParser(s string) (*Parser, error) {
 		},
 	}
 
-	p.refs["services"] = servicesNode
+	p.refs["^services"] = servicesNode
 	p.refs["$service"] = containerNode
 	p.refs["$serviceTitleNode"] = containerTitleNode
 
@@ -79,8 +94,15 @@ func (p *Parser) Parse() error {
 	var parseErr error
 	for {
 		flag, value, err := p.parseOneFlag()
-		if err != nil || flag == "" {
+		if err != nil {
+			if errors.Is(err, errSkipFlag) {
+				continue
+			}
 			parseErr = err
+			break
+		}
+
+		if flag == "" {
 			break
 		}
 
@@ -90,18 +112,31 @@ func (p *Parser) Parse() error {
 				dockerFlag = dockerRunFlags[ref]
 			}
 
+			if dockerFlag.ComposeName == "" {
+				continue
+			}
+
 			composePath := strings.Split(dockerFlag.ComposeName, ".")
 
 			parent := p.document
 			for len(composePath) > 0 {
 				key := composePath[0]
-				// find
+				composePath = composePath[1:]
+				val := value
+
+				kind := dockerFlag.Type
+
 				cNode := p.refs[key]
+				if ftype, ok := specialComposeTypes[key]; ok {
+					kind = ftype
+				}
 				if cNode == nil {
-					p.addNode(parent, key, value, len(composePath))
+					cNode, err = p.addNode(parent, flag, key, val, kind)
+					if err != nil {
+						return err
+					}
 				}
 				parent = cNode
-				composePath = composePath[1:]
 			}
 		}
 
@@ -112,27 +147,70 @@ func (p *Parser) Parse() error {
 		parseErr = p.parseImage()
 	}
 
+	if parseErr != nil {
+		return parseErr
+	}
+
+	p.yamlBytes, parseErr = yaml.Marshal(p.document)
 	return parseErr
 }
 
-func (p *Parser) addNode(parent *yaml.Node, key, value string, depth int) {
-	KeyNode := &yaml.Node{
-		Kind:  yaml.ScalarNode,
-		Value: key,
+func trimQuotes(s string) string {
+	return strings.Trim(s, `"'`)
+}
+
+func (p *Parser) addNode(parent *yaml.Node, flag, key, value string, ftype FlagType) (*yaml.Node, error) {
+	kind := ftype.YamlKind()
+	valueNode := &yaml.Node{}
+	var keyNode *yaml.Node
+	mainKey := key
+
+	value = trimQuotes(value)
+
+	if key == "$var" {
+		key = ""
+		switch ftype {
+		case MapType:
+			kind = yaml.ScalarNode
+			vals := strings.SplitN(value, "=", 2)
+			switch len(vals) {
+			case 1:
+				key = vals[0]
+				value = ""
+			case 2:
+				key, value = vals[0], trimQuotes(vals[1])
+			default:
+				return nil, fmt.Errorf("invalid value %s for docker run flag %q", value, flag)
+			}
+		case ArrayType:
+			kind = yaml.ScalarNode
+		case UlimitType:
+			ulimit, err := ParseUlimit(value)
+			if err != nil {
+				return nil, err
+			}
+			keyNode, valueNode = ulimit.YAML()
+			key = keyNode.Value
+		}
 	}
 
-	valueNode := &yaml.Node{}
-	switch depth {
-	case 1: // scalar node
-		valueNode.Kind = yaml.ScalarNode
-		valueNode.Value = value
-	case 2: // sequence node
-		valueNode.Kind = yaml.SequenceNode
-	default: // mapping node
-		valueNode.Kind = yaml.MappingNode
+	valueNode.Value = value
+	valueNode.Kind = kind
+
+	if key != "" {
+		parent.Content = append(parent.Content, &yaml.Node{
+			Kind:  yaml.ScalarNode,
+			Value: key,
+		})
+
+		if mainKey != "$var" {
+			p.refs[key] = valueNode
+		}
 	}
-	p.refs[key] = valueNode
-	parent.Content = append(parent.Content, KeyNode, valueNode)
+
+	parent.Content = append(parent.Content, valueNode)
+
+	return valueNode, nil
 }
 
 func (p *Parser) parseImage() error {
@@ -178,11 +256,6 @@ func (p *Parser) parseImage() error {
 	return nil
 }
 
-var (
-	errNoMoreFlags = errors.New("no more flags available")
-	errInvalidFlag = errors.New("invalid docker run flag")
-)
-
 func (p *Parser) parseOneFlag() (string, string, error) {
 	if len(p.command) == 0 {
 		return "", "", nil
@@ -190,6 +263,11 @@ func (p *Parser) parseOneFlag() (string, string, error) {
 
 	f := p.command[0]
 	if len(f) > 0 && f[0] != '-' {
+		if f[0] == '\\' {
+			// shows a line break, skip
+			p.command = p.command[1:]
+			return "", "", errSkipFlag
+		}
 		// this could possibly be the image name and not a flag
 		return "", "", errNoMoreFlags
 	}
@@ -258,10 +336,13 @@ func (p *Parser) parseOneFlag() (string, string, error) {
 	} else {
 		if !hasValue {
 			// next argument is definitely the value
-			// TODO: is it really? what about `docker run --label -myLabelWhichHasAHyphenIntheBeginning image`
 			if len(p.command) > 0 {
-				value, p.command = p.command[0], p.command[1:]
-				hasValue = true
+				arg := p.command[0]
+				// TODO: is it really? what about `docker run --label -myLabelWhichHasAHyphenIntheBeginning image`
+				if arg[0] != '-' {
+					value, p.command = arg, p.command[1:]
+					hasValue = true
+				}
 			}
 		}
 
@@ -273,10 +354,18 @@ func (p *Parser) parseOneFlag() (string, string, error) {
 	return name, value, nil
 }
 
+func (p *Parser) Bytes() []byte {
+	return p.yamlBytes
+}
+
+func (p *Parser) String() string {
+	return string(p.Bytes())
+}
+
 func flagType(name string) *FlagType {
 	if dockerFlag, ok := dockerRunFlags[name]; ok {
 		ftype := dockerFlag.Type
-		if ref := dockerFlag.Reference; ref == "" {
+		if ref := dockerFlag.Reference; ref != "" {
 			ftype = dockerRunFlags[ref].Type
 		}
 
