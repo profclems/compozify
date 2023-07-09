@@ -3,7 +3,6 @@ package parser
 import (
 	"errors"
 	"fmt"
-	"os"
 	"strconv"
 	"strings"
 
@@ -21,6 +20,7 @@ type Parser struct {
 	version  string
 
 	refs    map[string]*yaml.Node
+	vars    *variables
 	command []string
 
 	yamlBytes []byte
@@ -39,6 +39,7 @@ func NewParser(s string) (*Parser, error) {
 	p := &Parser{
 		version: composeVersion,
 		refs:    make(map[string]*yaml.Node),
+		vars:    newVariables(),
 	}
 
 	command, err := parseArgs(s)
@@ -113,12 +114,7 @@ func (p *Parser) Parse() error {
 			break
 		}
 
-		dockerFlag, ok := dockerRunFlags[flag]
-		if ok {
-			if ref := dockerFlag.Reference; ref != "" {
-				dockerFlag = dockerRunFlags[ref]
-			}
-
+		if dockerFlag := p.vars.Get(flag); dockerFlag != nil {
 			if dockerFlag.ComposeName == "" {
 				continue
 			}
@@ -134,7 +130,7 @@ func (p *Parser) Parse() error {
 				kind := dockerFlag.Type
 
 				cNode := p.refs[key]
-				if ftype, ok := specialComposeTypes[key]; ok {
+				if ftype := p.vars.GetType(key); !ftype.IsZero() {
 					kind = ftype
 				}
 				if cNode == nil {
@@ -305,34 +301,33 @@ func (p *Parser) parseOneFlag() (string, string, error) {
 	// check if flag has value attached
 	value := ""
 	hasValue := false
-	if numOfMinuses == 1 && len(name) > 1 {
+	varType := p.vars.GetVarType(name)
+	if numOfMinuses == 1 && len(name) > 1 && name[1] != '=' {
 		// if the flag is a shorthand and not a boolean the value can be directly
 		//  attached to the flag name like -p80:80 and -uroot
-		fmt.Fprintf(os.Stderr, "name: %s\n", name)
-		if name[1] != '=' {
-			fname := name[:1]
-			if ft := flagType(fname); ft != nil && *ft == BoolType {
-				p.command = append([]string{"-" + name[1:]}, p.command...)
-				name = fname
-				value = "true"
-				hasValue = true
-				fmt.Println("bool flag", name, value)
-			} else {
-				value = name[1:]
-				name = fname
-				hasValue = true
-			}
+		fname := name[:1]
+		varType = p.vars.GetVarType(fname)
+		if varType == BoolType {
+			p.command = append([]string{"-" + name[1:]}, p.command...)
+			name = fname
+			value = "true"
+		} else {
+			value = name[1:]
+			name = fname
 		}
+		hasValue = true
 	}
 	for i := 0; i < len(name); i++ {
 		if name[i] == '=' {
 			hasValue = true
 			value, name = name[i+1:], name[:i]
+			varType = p.vars.GetVarType(name)
+			break
 		}
 	}
 
 	// check if flag is a boolean flag
-	if ft := flagType(name); ft != nil && *ft == BoolType {
+	if varType == BoolType {
 		if hasValue {
 			pv, err := strconv.ParseBool(value)
 			if err != nil {
@@ -387,17 +382,4 @@ func (p *Parser) Bytes() []byte {
 
 func (p *Parser) String() string {
 	return string(p.Bytes())
-}
-
-func flagType(name string) *FlagType {
-	if dockerFlag, ok := dockerRunFlags[name]; ok {
-		ftype := dockerFlag.Type
-		if ref := dockerFlag.Reference; ref != "" {
-			ftype = dockerRunFlags[ref].Type
-		}
-
-		return &ftype
-	}
-
-	return nil
 }

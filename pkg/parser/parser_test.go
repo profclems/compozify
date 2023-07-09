@@ -321,6 +321,19 @@ services:
         image: alpine
 `,
 		},
+		{
+			name:    "command with mount using short syntax having access mode",
+			command: `docker run -it --rm -v /tmp:/tmp:ro alpine`,
+			want: `version: "3.8"
+services:
+    alpine:
+        stdin_open: true
+        tty: true
+        volumes:
+            - /tmp:/tmp:ro
+        image: alpine
+`,
+		},
 	}
 
 	for _, tt := range tests {
