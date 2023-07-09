@@ -8,7 +8,6 @@ type FlagType int
 // Flag types
 const (
 	ArrayType FlagType = 1 << iota
-	ArrayOrMap
 	BoolType
 	Float64Type
 	IntType
@@ -57,8 +56,8 @@ var specialComposeTypes = map[string]FlagType{
 	"options":      MapType, // logging.options
 	"healthcheck":  MapType,
 	"^networks":    MapType,
-	"networks":     ArrayType,
-	"default":      StringType, // networks.default
+	"networks":     MapType,
+	"default":      MapType, // networks.default
 	"ports":        ArrayType,
 	"blkio_config": MapType,
 	"storage_opt":  MapType,
@@ -83,7 +82,7 @@ var dockerRunFlags = map[string]DockerFlag{
 		Type:        MapType,
 		ComposeName: "^services.$service.annotations.$var",
 	},
-	"attach": {
+	"attach": { // TODO: check the spec format
 		Type:        ArrayType,
 		ComposeName: "^services.$service.attach.$var",
 	},
@@ -142,7 +141,7 @@ var dockerRunFlags = map[string]DockerFlag{
 	},
 	"cpus": {
 		Type:        Float64Type,
-		ComposeName: "^services.$service.deploy.limits.cpus",
+		ComposeName: "^services.$service.deploy.resources.limits.cpus",
 	},
 	"cpuset-cpus": {
 		Type:        StringType,
@@ -157,7 +156,7 @@ var dockerRunFlags = map[string]DockerFlag{
 	},
 	"detach": {
 		Type:        BoolType,
-		ComposeName: "^services.$service.detach",
+		ComposeName: "",
 		Alias:       "d",
 	},
 	"device": {
@@ -347,6 +346,9 @@ var dockerRunFlags = map[string]DockerFlag{
 	"name": {
 		Type:        StringType,
 		ComposeName: "^services.$service.container_name",
+	},
+	"net": {
+		Reference: "network",
 	},
 	"network": {
 		Type:        StringType,

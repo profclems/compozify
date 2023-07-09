@@ -238,7 +238,7 @@ services:
 		{
 			name: "command with mount options",
 			command: `docker run -i -t --rm \
---mount type=bind,source=/tmp,target=/tmp, \
+--mount type=bind,source=/tmp,target=/tmp \
 alpine`,
 			want: `version: "3.8"
 services:

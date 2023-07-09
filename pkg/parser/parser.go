@@ -226,11 +226,14 @@ func (p *Parser) parseImage() error {
 			Value: image,
 		},
 	}
-	p.command = p.command[1:] // the rest are commands
-	// TODO: what if the image name is profclems/glab:latest or just profclems/glab??
+	// if the image name is for example, profclems/glab:latest or just profclems/glab
 	//  we need to make sure the service name will be the last word after slash but without the
 	//  tag version, like just "glab" in the example above
-	p.refs["$serviceTitleNode"].Value = image
+	p.command = p.command[1:] // the rest are commands
+	ns := strings.Split(image, "/")
+	serviceName := strings.SplitN(ns[len(ns)-1], ":", 2)[0]
+
+	p.refs["$serviceTitleNode"].Value = serviceName
 	p.refs["$service"].Content = append(p.refs["$service"].Content, imageNode...)
 
 	if len(p.command) > 0 {
@@ -325,7 +328,7 @@ func (p *Parser) parseOneFlag() (string, string, error) {
 			if arg[0] == '-' {
 				// next arg is also a flag, so we can assume the value is true
 				value = "true"
-			} else if pv, err := strconv.ParseBool(arg); err != nil {
+			} else if pv, err := strconv.ParseBool(arg); err == nil {
 				value = strconv.FormatBool(pv)
 				p.command = p.command[1:]
 			} else {
