@@ -4,7 +4,7 @@ import (
 	"github.com/rs/zerolog"
 	"github.com/spf13/cobra"
 
-	"github.com/profclems/composeify/internal/version"
+	"github.com/profclems/compozify/internal/version"
 )
 
 func NewRootCmd(logger *zerolog.Logger, version version.Info) *cobra.Command {
