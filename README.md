@@ -2,6 +2,13 @@
 
 Compozify is a simple (yet complicated) tool to generate a `docker-compose.yml` file from a `docker run` command.
 
+# Usage
+
+## Screenshot
+
+![image](https://github.com/profclems/compozify/assets/41906128/bcd27512-8692-44f3-9113-63bfb112e38e)
+
+
 ## Installation
 Download a binary suitable for your OS at the [releases page](https://github.com/profclems/compozify/releases/latest).
 
