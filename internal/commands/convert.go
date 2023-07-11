@@ -8,7 +8,7 @@ import (
 	"github.com/rs/zerolog"
 	"github.com/spf13/cobra"
 
-	"github.com/profclems/composeify/pkg/parser"
+	"github.com/profclems/compozify/pkg/parser"
 )
 
 var defaultFilename = "compose.yml"

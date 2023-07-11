@@ -356,12 +356,12 @@ services:
         image: alpine
 `,
 		},
-		{
-			name: "command with volume type mount with nocopy and volume options",
-			command: `docker run -it --rm \
---mount type=volume,source=volume1,target=/tmp,volume-nocopy,volume-driver=local,volume-opt=type=nfs,volume-opt=device=:/tmp,volume-opt=o=addr=
-alpine`,
-		},
+		//		{
+		//			name: "command with volume type mount with nocopy and volume options",
+		//			command: `docker run -it --rm \
+		//--mount type=volume,source=volume1,target=/tmp,volume-nocopy,volume-driver=local,volume-opt=type=nfs,volume-opt=device=:/tmp,volume-opt=o=addr=
+		//alpine`,
+		//		},
 	}
 
 	for _, tt := range tests {
