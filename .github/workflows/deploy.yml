@@ -35,19 +35,21 @@ jobs:
           git fetch --unshallow
           scripts/changelog | tee CHANGELOG.md
 
-      - name: Release
-        uses: goreleaser/goreleaser-action@v2
-        with:
-          version: latest
-          install-only: true
+      - name: Test Release
+        uses: goreleaser/goreleaser-action@v4
+        if: startsWith(github.ref, 'refs/head/main')
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          if [[ $GITHUB_REF == refs/tags/v* ]]; then
-            goreleaser release --release-notes=CHANGELOG.md
-          elif [[ $GITHUB_REF == refs/heads/trunk ]]; then
-            goreleaser --snapshot
-          fi
+        with:
+          version: latest
+          args: release --snapshot
+
+      - name: Release
+        uses: goreleaser/goreleaser-action@v4
+        if: startsWith(github.ref, 'refs/tags/v')
+        with:
+          version: latest
+          args: release --release-notes=CHANGELOG.md
 
       - name: Bump Homebrew formula
         uses: mislav/bump-homebrew-formula-action@v1
