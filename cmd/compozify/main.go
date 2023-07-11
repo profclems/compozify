@@ -7,8 +7,8 @@ import (
 
 	"github.com/rs/zerolog"
 
-	"github.com/profclems/composeify/internal/commands"
-	"github.com/profclems/composeify/internal/version"
+	"github.com/profclems/compozify/internal/commands"
+	"github.com/profclems/compozify/internal/version"
 )
 
 func main() {
