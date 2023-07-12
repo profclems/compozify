@@ -4,7 +4,8 @@ import LocalFont from 'next/font/local'
 import Image from 'next/image'
 import { cn } from '~/utils/classNames'
 import { siteConfig } from '~/config/site'
-import ThemeProvider from '~/context/useTheme'
+import { StoreProvider } from '~/context/useStore'
+import Navbar from '~/components/Navbar'
 
 export const metadata: Metadata = {
   title: {
@@ -61,7 +62,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
     >
       <head />
       <body className="bg-white text-neutral-900 dark:bg-neutral-900 dark:text-white">
-        <ThemeProvider>
+        <StoreProvider>
           <main className="bg-white text-neutral-900 dark:bg-neutral-900 dark:text-white">
             <div className={cn('relative')}>
               <div className="fixed inset-0">
@@ -73,10 +74,11 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                   style={{ position: 'absolute', inset: 0, width: '100%', height: '100%' }}
                 />
               </div>
-              <div className="relative inset-0 z-[1] min-h-screen w-full">{children}</div>
+              <Navbar className={cn('fixed z-[4] top-0 inset-x-0')} />
+              <div className="relative inset-0 z-[3] min-h-screen w-full">{children}</div>
             </div>
           </main>
-        </ThemeProvider>
+        </StoreProvider>
       </body>
     </html>
   )

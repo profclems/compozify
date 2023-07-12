@@ -9,8 +9,7 @@
     "lint": "next lint",
     "lint:fix": "npx eslint ./**/*.{js,ts,jsx,tsx} --quiet --fix",
     "format:fix": "prettier --write \"**/*.{js,ts,jsx,tsx,css}\" --cache",
-    "format:check": "prettier --check \"**/*.{js,ts,jsx,tsx,css}\" --cache",
-    "prepare": "husky install"
+    "format:check": "prettier --check \"**/*.{js,ts,jsx,tsx,css}\" --cache"
   },
   "dependencies": {
     "@types/node": "20.4.1",
@@ -28,8 +27,7 @@
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "tailwind-merge": "^1.13.2",
-    "tailwindcss": "3.3.2",
-    "typescript": "5.1.6"
+    "tailwindcss": "3.3.2"
   },
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^6.0.0",
@@ -38,11 +36,11 @@
     "eslint-config-next": "13.4.9",
     "eslint-config-prettier": "^8.8.0",
     "eslint-plugin-jsx-a11y": "^6.7.1",
-    "eslint-plugin-prettier": "^5.0.0",
+    "eslint-plugin-prettier": "^4.2.1",
     "eslint-plugin-react": "^7.32.2",
     "eslint-plugin-react-hooks": "^4.6.0",
-    "husky": "^8.0.3",
     "prettier": "^2.8.8",
-    "prettier-plugin-tailwindcss": "^0.3.0"
+    "prettier-plugin-tailwindcss": "^0.3.0",
+    "typescript": "5.1.6"
   }
 }
