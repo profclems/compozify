@@ -9,12 +9,12 @@
   "icons": [
     {
       "src": "/favicon.ico",
-      "sizes": "116x133",
+      "sizes": "1080x1080",
       "type": "image/x-icon"
     },
     {
       "src": "/icons/icon.png",
-      "sizes": "116x133",
+      "sizes": "1080x1080",
       "type": "image/png"
     }
   ]

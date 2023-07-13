@@ -3,10 +3,12 @@
 import { HiDesktopComputer, HiMoon, HiSun } from 'react-icons/hi'
 import { AnimatePresence, LayoutGroup, motion } from 'framer-motion'
 import { useTheme } from 'next-themes'
+import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { cn } from '~/utils/classNames'
 import { siteConfig } from '~/config/site'
 import useStore from '~/context/useStore'
+import { FaGithub } from 'react-icons/fa'
 
 export default function Navbar({ className }: { className?: string }) {
   const { theme, setTheme } = useTheme()
@@ -21,9 +23,29 @@ export default function Navbar({ className }: { className?: string }) {
       )}
     >
       {/* title */}
-      <h1 className="text-xl md:text-3xl font-bold uppercase min-h-[22px] md:min-h-[29px]">
-        <span className={cn(pathname === '/' && titleInView && 'hidden')}>{siteConfig.name}</span>
+      <h1
+        className={cn(
+          'text-xl md:text-3xl font-bold uppercase min-h-[22px] md:min-h-[29px]',
+          pathname === '/' && titleInView && 'hidden'
+        )}
+      >
+        <span className="">{siteConfig.name}</span>
       </h1>
+      {/* menu */}
+      <ul className={cn('flex items-center space-x-3')}>
+        <Link href={siteConfig.links.github} target="_blank" rel="noopener noreferrer">
+          <FaGithub className={cn('h-6 w-auto')} />
+        </Link>
+        <Link
+          href="/docs"
+          className={cn(
+            'px-2 py-1 relative',
+            pathname.startsWith('/docs') && 'text-white bg-zinc-800'
+          )}
+        >
+          Docs
+        </Link>
+      </ul>
       {/* theme */}
       <LayoutGroup>
         <ul className={cn('flex items-center justify-center space-x-2 max-lg:order-1')}>

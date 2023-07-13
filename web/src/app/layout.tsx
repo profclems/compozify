@@ -54,16 +54,16 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   return (
     <html
       className={cn(
-        'bg-white text-neutral-900 dark:bg-neutral-900 dark:text-white',
+        'bg-white text-zinc-900 dark:bg-zinc-800 dark:text-white',
         Satoshi.variable,
         Lobster.variable,
         JetbrainsMono.variable
       )}
     >
       <head />
-      <body className="bg-white text-neutral-900 dark:bg-neutral-900 dark:text-white">
+      <body className="bg-white text-zinc-900 dark:bg-zinc-800 dark:text-white">
         <StoreProvider>
-          <main className="bg-white text-neutral-900 dark:bg-neutral-900 dark:text-white">
+          <main className="bg-white text-zinc-900 dark:bg-zinc-800 dark:text-white">
             <div className={cn('relative')}>
               <div className="fixed inset-0">
                 <Image
