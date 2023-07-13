@@ -1,18 +1,20 @@
 'use client'
 
-import { useEffect, useRef } from 'react'
+import { Fragment, useEffect, useRef, useState } from 'react'
 import { useInView } from 'framer-motion'
 import { useForm, SubmitHandler } from 'react-hook-form'
 import { FaDocker } from 'react-icons/fa'
 import { cn } from '~/utils/classNames'
 import { siteConfig } from '~/config/site'
 import useStore from '~/context/useStore'
+import Spinner from '~/components/Spinner'
 
 export default function Home() {
   const { titleInView: t, setTitleInView } = useStore()
   const titleRef = useRef<HTMLHeadingElement>(null)
   const titleInView = useInView(titleRef, { margin: '0px 0px -100px 0px' })
   const commandInputRef = useRef<HTMLInputElement>(null)
+  const [loading, setLoading] = useState(false)
 
   useEffect(() => {
     if (titleInView !== t) setTitleInView(titleInView)
@@ -43,11 +45,16 @@ export default function Home() {
   const {
     register,
     handleSubmit,
-    formState: { errors }
+    formState: { errors, isValid, isSubmitting }
   } = useForm<CommandInput>({
     mode: 'onChange',
     reValidateMode: 'onChange'
   })
+
+  useEffect(() => {
+    if (isSubmitting && isValid) setLoading(true)
+    else setLoading(false)
+  }, [isSubmitting, isValid])
 
   const onSubmit: SubmitHandler<CommandInput> = _data => {}
 
@@ -92,8 +99,14 @@ export default function Home() {
                 type="submit"
                 className="bg-zinc-950 uppercase flex items-center justify-center transition-transform hover:-translate-y-0.5 text-white space-x-4 px-4 py-3"
               >
-                <FaDocker className="h-4 w-auto" />
-                <span className="">Generate</span>
+                {loading ? (
+                  <Spinner className="h-4 w-auto" />
+                ) : (
+                  <Fragment>
+                    <FaDocker className="h-4 w-auto" />
+                    <span className="">Generate</span>
+                  </Fragment>
+                )}
               </button>
             </div>
             {/* errors */}
