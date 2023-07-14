@@ -2,6 +2,7 @@ package router
 
 import (
 	"github.com/gorilla/mux"
+
 	"github.com/profclems/compozify/api/handler"
 )
 

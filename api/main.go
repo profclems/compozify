@@ -2,9 +2,10 @@ package main
 
 import (
 	"github.com/gorilla/mux"
-	"github.com/profclems/compozify/api/router"
 	"log"
 	"net/http"
+
+	"github.com/profclems/compozify/api/router"
 )
 
 func main() {

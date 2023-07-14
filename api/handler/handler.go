@@ -13,6 +13,10 @@ type DockerCommand struct {
 	Command string `json:"command"`
 }
 
+type Response struct {
+	Output string `json:"output"`
+}
+
 func ParseDockerCommand(w http.ResponseWriter, r *http.Request) {
 	var dockerCmd DockerCommand
 	err := json.NewDecoder(r.Body).Decode(&dockerCmd)
@@ -44,8 +48,13 @@ func ParseDockerCommand(w http.ResponseWriter, r *http.Request) {
 
 	dockerComposeYaml := p.String()
 
-	w.Header().Set("Content-Type", "application/x-yaml")
-	_, err = w.Write([]byte(dockerComposeYaml))
+	// Create the response
+	resp := Response{
+		Output: dockerComposeYaml,
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	err = json.NewEncoder(w).Encode(resp)
 	if err != nil {
 		log.Printf("Unable to write response: %v", err)
 		return
