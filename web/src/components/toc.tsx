@@ -3,10 +3,10 @@
 import { useEffect, useMemo, useState } from 'react'
 import Link from 'next/link'
 import { ScrollToTopWithBlog } from '~/components/ScrollTop'
-import clsx from 'clsx'
-import { BsArrowUpRight } from 'react-icons/bs'
-import { TableOfContents } from 'lib/toc'
 import { cn } from '~/utils/classNames'
+import clsx from 'clsx'
+import { TableOfContents } from 'lib/toc'
+import { BsArrowUpRight } from 'react-icons/bs'
 
 interface TocProps {
   toc: TableOfContents

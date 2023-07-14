@@ -1,16 +1,15 @@
-"use client"
+'use client'
 
-import * as React from "react"
-import { HiMoon, HiSun } from "react-icons/hi"
-import { useTheme } from "next-themes"
-
-import { Button } from "~/components/ui/button"
+import * as React from 'react'
+import { Button } from '~/components/ui/button'
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "~/components/ui/dropdown-menu"
+  DropdownMenuTrigger
+} from '~/components/ui/dropdown-menu'
+import { useTheme } from 'next-themes'
+import { HiMoon, HiSun } from 'react-icons/hi'
 
 export default function ThemeToggle() {
   const { setTheme } = useTheme()
@@ -25,15 +24,9 @@ export default function ThemeToggle() {
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
-        <DropdownMenuItem onClick={() => setTheme("light")}>
-          Light
-        </DropdownMenuItem>
-        <DropdownMenuItem onClick={() => setTheme("dark")}>
-          Dark
-        </DropdownMenuItem>
-        <DropdownMenuItem onClick={() => setTheme("system")}>
-          System
-        </DropdownMenuItem>
+        <DropdownMenuItem onClick={() => setTheme('light')}>Light</DropdownMenuItem>
+        <DropdownMenuItem onClick={() => setTheme('dark')}>Dark</DropdownMenuItem>
+        <DropdownMenuItem onClick={() => setTheme('system')}>System</DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
   )

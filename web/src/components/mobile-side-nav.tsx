@@ -1,16 +1,16 @@
 'use client'
 
-import useStore from '~/context/useStore'
-import Link, { LinkProps } from "next/link"
-import { Sheet, SheetTrigger, SheetContent } from '~/components/ui/sheet'
+import Link, { LinkProps } from 'next/link'
 import { useRouter } from 'next/navigation'
+import DocsSideNav from '~/components/docs-side-nav'
 import { buttonVariants } from '~/components/ui/button'
-import { HiMenu } from 'react-icons/hi'
+import { ScrollArea } from '~/components/ui/scroll-area'
+import { Sheet, SheetContent, SheetTrigger } from '~/components/ui/sheet'
 import { docsConfig } from '~/config/docs'
 import { siteConfig } from '~/config/site'
-import { ScrollArea } from "~/components/ui/scroll-area"
-import DocsSideNav from '~/components/docs-side-nav'
+import useStore from '~/context/useStore'
 import { cn } from '~/utils/classNames'
+import { HiMenu } from 'react-icons/hi'
 
 export default function MobileSideNav() {
   const { menu, setMenu } = useStore()
@@ -18,20 +18,13 @@ export default function MobileSideNav() {
   return (
     <Sheet open={menu} onOpenChange={setMenu}>
       <SheetTrigger asChild>
-        <button
-          type='button'
-          className={cn(buttonVariants({ variant: 'ghost' }), 'md:hidden')}
-        >
+        <button type="button" className={cn(buttonVariants({ variant: 'ghost' }), 'md:hidden')}>
           <HiMenu className="h-5 w-auto" />
           <span className="sr-only">Toggle Menu</span>
         </button>
       </SheetTrigger>
-      <SheetContent side="left" className="pr-0 bg-white/95 dark:bg-zinc-800/95">
-        <MobileLink
-          href="/"
-          className="flex items-center"
-          onOpenChange={setMenu}
-        >
+      <SheetContent side="left" className="bg-white/95 pr-0 dark:bg-zinc-800/95">
+        <MobileLink href="/" className="flex items-center" onOpenChange={setMenu}>
           <span className="font-bold uppercase">{siteConfig.name}</span>
         </MobileLink>
         <ScrollArea className="my-4 h-[calc(100vh-8rem)] pb-10 pl-2">
@@ -48,13 +41,7 @@ interface MobileLinkProps extends LinkProps {
   className?: string
 }
 
-function MobileLink({
-  href,
-  onOpenChange,
-  className,
-  children,
-  ...props
-}: MobileLinkProps) {
+function MobileLink({ href, onOpenChange, className, children, ...props }: MobileLinkProps) {
   const router = useRouter()
   return (
     <Link

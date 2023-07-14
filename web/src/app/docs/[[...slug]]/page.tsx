@@ -1,13 +1,14 @@
 import '~/styles/mdx.css'
+
 import { notFound } from 'next/navigation'
-import { allDocs } from 'contentlayer/generated'
-import { getTableOfContents } from '~/lib/toc'
 import { Mdx } from '~/components/mdx'
-import { cn } from '~/utils/classNames'
 import { DocsPaginate as Paginate } from '~/components/paginate'
 import { DocsTableOfContents } from '~/components/toc'
-import { HiChevronRight } from 'react-icons/hi'
 import { ScrollArea } from '~/components/ui/scroll-area'
+import { getTableOfContents } from '~/lib/toc'
+import { cn } from '~/utils/classNames'
+import { allDocs } from 'contentlayer/generated'
+import { HiChevronRight } from 'react-icons/hi'
 
 interface DocPageProps {
   params: {
@@ -45,7 +46,7 @@ export default async function DocPage({ params }: DocPageProps) {
         <div className="mb-4 flex items-center space-x-1 text-sm">
           <div className="overflow-hidden text-ellipsis whitespace-nowrap">Docs</div>
           <HiChevronRight className="h-4 w-4" />
-          <div className="font-medium text-foreground">{doc.title}</div>
+          <div className="text-foreground font-medium">{doc.title}</div>
         </div>
         <div className="pb-12 pt-4">
           <Mdx code={doc.body.code} />

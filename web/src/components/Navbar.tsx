@@ -1,15 +1,15 @@
 'use client'
 
-import { HiDesktopComputer, HiMoon, HiSun } from 'react-icons/hi'
+import Link from 'next/link'
+import { usePathname } from 'next/navigation'
+import MobileSideNav from '~/components/mobile-side-nav'
+import { siteConfig } from '~/config/site'
+import useStore from '~/context/useStore'
+import { cn } from '~/utils/classNames'
 import { AnimatePresence, LayoutGroup, motion } from 'framer-motion'
 import { useTheme } from 'next-themes'
 import { FaGithub } from 'react-icons/fa'
-import Link from 'next/link'
-import { usePathname } from 'next/navigation'
-import { cn } from '~/utils/classNames'
-import { siteConfig } from '~/config/site'
-import useStore from '~/context/useStore'
-import MobileSideNav from '~/components/mobile-side-nav'
+import { HiDesktopComputer, HiMoon, HiSun } from 'react-icons/hi'
 
 export default function Navbar({ className }: { className?: string }) {
   const { theme, setTheme } = useTheme()
@@ -19,7 +19,7 @@ export default function Navbar({ className }: { className?: string }) {
   return (
     <nav
       className={cn(
-        'px-2 py-4 sm:px-4 lg:px-12 lg:py-6 flex justify-between items-center',
+        'flex items-center justify-between px-2 py-4 sm:px-4 lg:px-12 lg:py-6',
         className
       )}
     >
@@ -27,9 +27,10 @@ export default function Navbar({ className }: { className?: string }) {
         {/* mobile side nav */}
         <MobileSideNav />
         {/* title */}
-        <Link href="/"
+        <Link
+          href="/"
           className={cn(
-            'text-xl md:text-3xl font-bold uppercase min-h-[22px] md:min-h-[29px]',
+            'min-h-[22px] text-xl font-bold uppercase md:min-h-[29px] md:text-3xl',
             pathname === '/' && titleInView && 'hidden'
           )}
         >
@@ -37,7 +38,12 @@ export default function Navbar({ className }: { className?: string }) {
         </Link>
       </div>
       {/* menu */}
-      <div className={cn('flex items-center space-x-3', pathname === '/' && titleInView && 'md:w-full md:flex-1 justify-between')}>
+      <div
+        className={cn(
+          'flex items-center space-x-3',
+          pathname === '/' && titleInView && 'justify-between md:w-full md:flex-1'
+        )}
+      >
         <ul className={cn('flex items-center space-x-3 max-md:hidden')}>
           <Link href={siteConfig.links.github} target="_blank" rel="noopener noreferrer">
             <FaGithub className={cn('h-6 w-auto')} />
@@ -45,8 +51,8 @@ export default function Navbar({ className }: { className?: string }) {
           <Link
             href="/docs"
             className={cn(
-              'px-2 py-1 relative',
-              pathname.startsWith('/docs') && 'text-white bg-zinc-800'
+              'relative px-2 py-1',
+              pathname.startsWith('/docs') && 'bg-zinc-800 text-white'
             )}
           >
             Docs

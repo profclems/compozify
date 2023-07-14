@@ -6,9 +6,10 @@ import rehypeSlug from 'rehype-slug'
 import { codeImport } from 'remark-code-import'
 import remarkGfm from 'remark-gfm'
 import { getHighlighter, loadTheme } from 'shiki'
-import { UnistNode, UnistTree } from './lib/unist'
 import { visit } from 'unist-util-visit'
+
 import { rehypeComponent } from './lib/rehype-component'
+import { UnistNode, UnistTree } from './lib/unist'
 
 /** @type {import('contentlayer/source-files').ComputedFields} */
 const computedFields: import('contentlayer/source-files').ComputedFields = {

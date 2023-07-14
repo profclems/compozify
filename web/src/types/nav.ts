@@ -8,8 +8,7 @@ export interface NavItem {
   children?: NavItem[]
 }
 
-
 export interface DocsConfig {
   'Getting Started': NavItem[]
-  'Commands': NavItem[]
+  Commands: NavItem[]
 }

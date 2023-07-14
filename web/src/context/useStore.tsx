@@ -1,8 +1,8 @@
 'use client'
 
-import { createContext, useState, useContext, useMemo, ReactNode, useCallback } from 'react'
-import { ThemeProvider as Theme } from 'next-themes'
+import { createContext, ReactNode, useCallback, useContext, useMemo, useState } from 'react'
 import useMounted from '~/hooks/useMounted'
+import { ThemeProvider as Theme } from 'next-themes'
 
 interface Store {
   titleInView: boolean
@@ -30,12 +30,10 @@ export function StoreProvider({ children }: { children: ReactNode }) {
 
   const compose = useCallback(async () => {
     try {
-      const response = await fetch('/api/compose', {
+      const response = await fetch('/api/parse', {
         mode: 'cors',
         method: 'GET',
-        headers: {
-          'Content-Type': 'application/json'
-        }
+        headers: { 'Content-Type': 'application/json' }
       })
 
       // throw error if response is not ok to trigger catch block

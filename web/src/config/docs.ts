@@ -1,10 +1,10 @@
-import { DocsConfig } from "~/types/nav"
+import { DocsConfig } from '~/types/nav'
 
 export const docsConfig: DocsConfig = {
   'Getting Started': [
     {
       title: 'Try it out',
-      href: '/',
+      href: '/'
     },
     {
       title: 'GitHub',
@@ -12,9 +12,9 @@ export const docsConfig: DocsConfig = {
       external: true
     },
     {
-      title: "Installation",
-      href: "/docs/installation",
-    },
+      title: 'Installation',
+      href: '/docs/installation'
+    }
   ],
-  'Commands': []
+  Commands: []
 }

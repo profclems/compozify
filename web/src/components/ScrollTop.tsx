@@ -2,9 +2,9 @@
 
 import { useEffect, useRef } from 'react'
 import { usePathname } from 'next/navigation'
-import { HiArrowUp } from 'react-icons/hi'
-import clsx from 'clsx'
 import useTop from '~/hooks/useTop'
+import clsx from 'clsx'
+import { HiArrowUp } from 'react-icons/hi'
 
 export default function ScrollTop({
   className,

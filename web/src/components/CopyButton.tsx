@@ -1,9 +1,9 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { HiCheck, HiClipboardCopy } from 'react-icons/hi'
 import { cn } from '~/utils/classNames'
 import copyToClipboardWithMeta from '~/utils/copy'
+import { HiCheck, HiClipboardCopy } from 'react-icons/hi'
 
 interface CopyButtonProps extends React.HTMLAttributes<HTMLButtonElement> {
   value: string

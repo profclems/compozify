@@ -1,11 +1,12 @@
 import '~/styles/globals.css'
+
 import { Metadata } from 'next'
 import LocalFont from 'next/font/local'
 import Image from 'next/image'
-import { cn } from '~/utils/classNames'
+import Navbar from '~/components/Navbar'
 import { siteConfig } from '~/config/site'
 import { StoreProvider } from '~/context/useStore'
-import Navbar from '~/components/Navbar'
+import { cn } from '~/utils/classNames'
 
 export const metadata: Metadata = {
   title: {
@@ -80,7 +81,9 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                   }}
                 />
               </div>
-              <Navbar className={cn('sticky z-[4] top-0 inset-x-0 bg-white/90 dark:bg-neutral-800/90')} />
+              <Navbar
+                className={cn('sticky inset-x-0 top-0 z-[4] bg-white/90 dark:bg-neutral-800/90')}
+              />
               <div className="relative inset-0 z-[3] min-h-screen w-full">{children}</div>
             </div>
           </main>

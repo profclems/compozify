@@ -1,7 +1,7 @@
 import { ReactNode } from 'react'
-import { docsConfig } from '~/config/docs'
-import { ScrollArea } from "~/components/ui/scroll-area"
 import DocsSideNav from '~/components/docs-side-nav'
+import { ScrollArea } from '~/components/ui/scroll-area'
+import { docsConfig } from '~/config/docs'
 
 export default function Layout({ children }: { children: ReactNode }) {
   return (

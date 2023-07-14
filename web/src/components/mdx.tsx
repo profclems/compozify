@@ -1,9 +1,9 @@
-import { useMDXComponent } from 'next-contentlayer/hooks'
 import Image from 'next/image'
-import { HiTerminal } from 'react-icons/hi'
-import { LiaFileInvoiceSolid } from 'react-icons/lia'
 import CopyButton from '~/components/CopyButton'
 import { cn } from '~/utils/classNames'
+import { useMDXComponent } from 'next-contentlayer/hooks'
+import { HiTerminal } from 'react-icons/hi'
+import { LiaFileInvoiceSolid } from 'react-icons/lia'
 
 interface MdxProps {
   code: string
@@ -31,10 +31,7 @@ const components = {
   ),
   h3: ({ className, ...props }: React.HTMLAttributes<HTMLHeadingElement>) => (
     <h3
-      className={cn(
-        'mt-8 scroll-m-20 text-2xl font-semibold tracking-tight',
-        className
-      )}
+      className={cn('mt-8 scroll-m-20 text-2xl font-semibold tracking-tight', className)}
       {...props}
     />
   ),
