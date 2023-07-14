@@ -366,7 +366,7 @@ services:
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			parser, err := NewParser(tt.command)
+			parser, err := New(tt.command)
 			if tt.wantErr != "" {
 				require.NotNil(t, err)
 				require.Nil(t, parser)

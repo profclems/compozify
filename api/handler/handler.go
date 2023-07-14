@@ -33,7 +33,7 @@ func ParseDockerCommand(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Create a new Parser
-	p, err := parser.NewParser(dockerCmd.Command)
+	p, err := parser.New(dockerCmd.Command)
 	if err != nil {
 		http.Error(w, fmt.Sprintf("Error creating parser: %v", err), http.StatusBadRequest)
 		return
