@@ -13,16 +13,11 @@ import { HiDesktopComputer, HiMoon, HiSun } from 'react-icons/hi'
 
 export default function Navbar({ className }: { className?: string }) {
   const { theme, setTheme } = useTheme()
-  const { titleInView, menu, setMenu } = useStore()
+  const { titleInView } = useStore()
   const pathname = usePathname()
 
   return (
-    <nav
-      className={cn(
-        'flex items-center justify-between px-2 py-4 sm:px-4 lg:px-12 lg:py-6',
-        className
-      )}
-    >
+    <nav className={cn('flex items-center justify-between px-2 py-4 sm:px-4 lg:px-12 lg:py-6', className)}>
       <div className="flex items-center space-x-2">
         {/* mobile side nav */}
         <MobileSideNav />
@@ -50,10 +45,7 @@ export default function Navbar({ className }: { className?: string }) {
           </Link>
           <Link
             href="/docs"
-            className={cn(
-              'relative px-2 py-1',
-              pathname.startsWith('/docs') && 'bg-zinc-800 text-white'
-            )}
+            className={cn('relative px-2 py-1', pathname.startsWith('/docs') && 'bg-zinc-800 text-white')}
           >
             Docs
           </Link>
@@ -66,11 +58,7 @@ export default function Navbar({ className }: { className?: string }) {
               dark: <HiMoon className={cn('h-4 w-auto')} />,
               light: <HiSun className={cn('h-4 w-auto')} />
             }).map(([key, value], i, self) => (
-              <li
-                key={key}
-                className={cn('relative block cursor-pointer p-1.5')}
-                onClick={() => setTheme(key)}
-              >
+              <li key={key} className={cn('relative block cursor-pointer p-1.5')} onClick={() => setTheme(key)}>
                 <AnimatePresence>
                   {key === theme && (
                     <motion.div

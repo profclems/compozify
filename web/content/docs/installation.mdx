@@ -26,24 +26,29 @@ If `go` is not installed, follow instructions on [the Go website](https://golang
 
 ```sh
 git clone https://github.com/profclems/compozify.git
+```
+
+3. Change directory to project
+
+```sh
 cd compozify
 ```
 
 If you have `$GOPATH/bin` or `$GOBIN` in your `$PATH`, you can just install with `make install` (install compozify in `$GOPATH/bin`) and **skip steps 3 and 4**.
 
-3. Build the project
+4. Build the project
 
 ```sh
 make build
 ```
 
-4. Change PATH to find newly compiled `compozify`
+5. Change PATH to find newly compiled `compozify`
 
 ```sh
 export PATH=$PWD/bin:$PATH
 ```
 
-5. Run `compozify --version` to confirm that it worked
+6. Run `compozify --version` to confirm that it worked
 
 ## License
 

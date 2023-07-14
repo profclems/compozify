@@ -27,7 +27,7 @@
     "contentlayer": "^0.3.4",
     "framer-motion": "^10.12.18",
     "mdast-util-toc": "^7.0.0",
-    "next": "13.4.9",
+    "next": "13.4.8",
     "next-contentlayer": "^0.3.4",
     "next-pwa": "^5.6.0",
     "next-themes": "^0.2.1",
@@ -65,16 +65,5 @@
     "prettier": "^2.8.8",
     "prettier-plugin-tailwindcss": "^0.3.0",
     "typescript": "5.1.6"
-  },
-  "pnpm": {
-    "overrides": {
-      "@opentelemetry/api": "1.4.1",
-      "@opentelemetry/core": "1.13.0",
-      "@opentelemetry/exporter-trace-otlp-grpc": "0.39.1",
-      "@opentelemetry/resources": "1.13.0",
-      "@opentelemetry/sdk-trace-base": "1.13.0",
-      "@opentelemetry/sdk-trace-node": "1.13.0",
-      "@opentelemetry/semantic-conventions": "1.13.0"
-    }
   }
 }

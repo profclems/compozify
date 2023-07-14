@@ -34,11 +34,7 @@ export function DocsTableOfContents({ toc, className }: TocProps) {
   return (
     <aside className={cn('text-xs transition-transform xl:text-sm', className)}>
       {/* Table of content */}
-      <div
-        className={cn(
-          'sticky top-16 -mt-10 max-h-[calc(var(--vh)-4rem)] space-y-2 overflow-y-auto pr-2 pt-16'
-        )}
-      >
+      <div className={cn('sticky top-16 -mt-10 max-h-[calc(var(--vh)-4rem)] space-y-2 overflow-y-auto pr-2 pt-16')}>
         <p className="text-sm font-medium uppercase">On This Page</p>
         <span className="child:w-auto mb-4 inline-flex flex-col space-y-2">
           {/* Docss */}
@@ -125,9 +121,7 @@ function Tree({ tree, level = 1, activeItem }: TreeProps) {
             >
               {item.title}
             </a>
-            {item.items?.length ? (
-              <Tree tree={item} level={level + 1} activeItem={activeItem} />
-            ) : null}
+            {item.items?.length ? <Tree tree={item} level={level + 1} activeItem={activeItem} /> : null}
           </li>
         )
       })}

@@ -12,3 +12,7 @@ export interface DocsConfig {
   'Getting Started': NavItem[]
   Commands: NavItem[]
 }
+
+export interface ErrorCause extends Error {
+  cause?: { error: Error; res: Response }
+}

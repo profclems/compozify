@@ -4,6 +4,7 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { DocsConfig, NavItem } from '~/types/nav'
 import { cn } from '~/utils/classNames'
+import useStore from '~/context/useStore'
 
 export interface DocsSidebarNavProps {
   items: DocsConfig
@@ -18,9 +19,7 @@ export default function DocsSideNav({ items, className }: DocsSidebarNavProps) {
       {Object.entries(items).map(([key, value], index) =>
         value.length > 0 ? (
           <div key={index} className={cn('pb-4')}>
-            <h3 className="text-foreground mb-1 rounded-md px-2 py-1 text-lg font-bold uppercase">
-              {key}
-            </h3>
+            <h3 className="text-foreground mb-1 rounded-md px-2 py-1 text-lg font-bold uppercase">{key}</h3>
             {value.length > 0 && <DocsSidebarNavItems items={value} pathname={pathname} />}
           </div>
         ) : undefined
@@ -35,6 +34,8 @@ export interface DocsSidebarNavItemsProps {
 }
 
 export function DocsSidebarNavItems({ items, pathname }: DocsSidebarNavItemsProps) {
+  const { setMenu } = useStore()
+
   return items?.length ? (
     <div className="grid grid-flow-row auto-rows-max text-sm">
       {items.map((item, index) =>
@@ -45,12 +46,11 @@ export function DocsSidebarNavItems({ items, pathname }: DocsSidebarNavItemsProp
             className={cn(
               'group flex w-full items-center rounded-md border border-transparent px-2 py-1 hover:underline',
               item.disabled && 'cursor-not-allowed opacity-60',
-              pathname === item.href
-                ? 'text-foreground font-medium underline'
-                : 'text-muted-foreground'
+              pathname === item.href ? 'text-foreground font-medium underline' : 'text-muted-foreground'
             )}
             target={item.external ? '_blank' : ''}
             rel={item.external ? 'noreferrer noopener' : ''}
+            onClick={() => setMenu(false)}
           >
             {item.title}
             {item.label && (

@@ -1,12 +1,10 @@
 import '~/styles/mdx.css'
-
 import { notFound } from 'next/navigation'
 import { Mdx } from '~/components/mdx'
 import { DocsPaginate as Paginate } from '~/components/paginate'
 import { DocsTableOfContents } from '~/components/toc'
 import { ScrollArea } from '~/components/ui/scroll-area'
 import { getTableOfContents } from '~/lib/toc'
-import { cn } from '~/utils/classNames'
 import { allDocs } from 'contentlayer/generated'
 import { HiChevronRight } from 'react-icons/hi'
 

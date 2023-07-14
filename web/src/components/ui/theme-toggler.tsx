@@ -2,12 +2,7 @@
 
 import * as React from 'react'
 import { Button } from '~/components/ui/button'
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger
-} from '~/components/ui/dropdown-menu'
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '~/components/ui/dropdown-menu'
 import { useTheme } from 'next-themes'
 import { HiMoon, HiSun } from 'react-icons/hi'
 

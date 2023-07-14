@@ -3,7 +3,6 @@
 import Link, { LinkProps } from 'next/link'
 import { useRouter } from 'next/navigation'
 import DocsSideNav from '~/components/docs-side-nav'
-import { buttonVariants } from '~/components/ui/button'
 import { ScrollArea } from '~/components/ui/scroll-area'
 import { Sheet, SheetContent, SheetTrigger } from '~/components/ui/sheet'
 import { docsConfig } from '~/config/docs'
@@ -18,7 +17,12 @@ export default function MobileSideNav() {
   return (
     <Sheet open={menu} onOpenChange={setMenu}>
       <SheetTrigger asChild>
-        <button type="button" className={cn(buttonVariants({ variant: 'ghost' }), 'md:hidden')}>
+        <button
+          type="button"
+          className={cn(
+            'inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors md:hidden'
+          )}
+        >
           <HiMenu className="h-5 w-auto" />
           <span className="sr-only">Toggle Menu</span>
         </button>

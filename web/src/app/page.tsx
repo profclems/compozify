@@ -8,17 +8,28 @@ import { cn } from '~/utils/classNames'
 import { useInView } from 'framer-motion'
 import { SubmitHandler, useForm } from 'react-hook-form'
 import { FaDocker } from 'react-icons/fa'
+import { Mdx } from '~/components/mdx'
 
 export default function Home() {
-  const { titleInView: t, setTitleInView } = useStore()
+  const { titleInView: t, setTitleInView, compose, code, error } = useStore()
   const titleRef = useRef<HTMLHeadingElement>(null)
   const titleInView = useInView(titleRef, { margin: '0px 0px -100px 0px' })
-  const commandInputRef = useRef<HTMLInputElement>(null)
   const [loading, setLoading] = useState(false)
 
   useEffect(() => {
     if (titleInView !== t) setTitleInView(titleInView)
   }, [setTitleInView, t, titleInView])
+
+  interface CommandInput {
+    command: string
+  }
+
+  const {
+    register,
+    handleSubmit,
+    setFocus,
+    formState: { errors, isSubmitting, isValid }
+  } = useForm<CommandInput>({ mode: 'onChange', reValidateMode: 'onChange' })
 
   useEffect(() => {
     function onKeyDown(e: KeyboardEvent) {
@@ -32,31 +43,22 @@ export default function Home() {
         return
       }
       e.preventDefault()
-      commandInputRef.current?.focus()
+      setFocus('command')
     }
     window.addEventListener('keydown', onKeyDown)
     return () => window.removeEventListener('keydown', onKeyDown)
-  }, [])
-
-  interface CommandInput {
-    command: string
-  }
-
-  const {
-    register,
-    handleSubmit,
-    formState: { errors, isValid, isSubmitting }
-  } = useForm<CommandInput>({
-    mode: 'onChange',
-    reValidateMode: 'onChange'
-  })
+  }, [setFocus])
 
   useEffect(() => {
     if (isSubmitting && isValid) setLoading(true)
     else setLoading(false)
   }, [isSubmitting, isValid])
 
-  const onSubmit: SubmitHandler<CommandInput> = _data => {}
+  useEffect(() => {
+    console.log(errors)
+  }, [errors])
+
+  const onSubmit: SubmitHandler<CommandInput> = data => compose(data.command).finally(() => setLoading(false))
 
   return (
     <main className={cn('')}>
@@ -73,24 +75,30 @@ export default function Home() {
       </header>
       {/* main */}
       <main className="px-5 sm:px-8 lg:px-16">
-        <form onSubmit={handleSubmit(onSubmit)}>
+        {/* form */}
+        <form action="#" method="post" onSubmit={handleSubmit(onSubmit)} className="">
           <div className="mx-auto max-w-lg space-y-4 px-2">
             {/* label */}
-            <label htmlFor="command-input" className="font-bold">
-              Enter Command to Generate `<em>docker-compose.yml</em>` *
-            </label>
-            {/* input */}
             <div className={cn('flex flex-col gap-5')}>
+              <label htmlFor="command-input" className="font-bold">
+                Enter Command to Generate `<em>docker-compose.yml</em>` *
+              </label>
+              {/* input */}
               <input
                 type="text"
                 id="command-input"
                 autoComplete="off"
                 {...register('command', {
-                  required: true,
-                  validate: value =>
-                    value.startsWith('docker run') || 'Must start with “docker run”'
+                  required: 'This field is required',
+                  pattern: {
+                    value: /^docker run .+$/i,
+                    message: 'Enter a valid docker command starting with “docker run”'
+                  },
+                  minLength: {
+                    value: 10,
+                    message: 'Please enter a valid docker command starting with “docker run”'
+                  }
                 })}
-                ref={commandInputRef}
                 placeholder={`(Press “/” to focus)`}
                 className={cn(
                   'flex-auto border border-zinc-500 bg-white px-4 py-2 text-zinc-950 placeholder-zinc-500 focus:border-zinc-950 focus:placeholder-zinc-400 focus:outline-none focus:ring-0 dark:border-zinc-400 dark:bg-zinc-600/60 dark:text-zinc-200 dark:focus:border-zinc-50'
@@ -99,6 +107,7 @@ export default function Home() {
               <button
                 type="submit"
                 className="flex items-center justify-center space-x-4 bg-zinc-950 px-4 py-3 uppercase text-white transition-transform hover:-translate-y-0.5"
+                disabled={loading}
               >
                 {loading ? (
                   <Spinner className="h-4 w-auto" />
@@ -111,13 +120,22 @@ export default function Home() {
               </button>
             </div>
             {/* errors */}
-            {errors.command && (
-              <div className="">
-                <p className="text-red-500">{errors.command.message}</p>
+            {errors.command && <p className="text-red-500">{errors.command.message}</p>}
+          </div>
+        </form>
+
+        {/* data from fetch */}
+        <div className="">
+          <div className="mx-auto max-w-lg space-y-4 px-2">
+            {code && <Mdx code={`\`\`\`yaml title="docker-compose.yaml"\n${code}\n\`\`\``} />}
+            {error && (
+              <div className="flex flex-col gap-4">
+                <p className="text-red-500">{error.message}</p>
+                <p className="text-red-500">Error code: {error.code}</p>
               </div>
             )}
           </div>
-        </form>
+        </div>
       </main>
     </main>
   )

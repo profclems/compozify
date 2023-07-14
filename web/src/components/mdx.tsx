@@ -1,4 +1,5 @@
 import Image from 'next/image'
+import Link from 'next/link'
 import CopyButton from '~/components/CopyButton'
 import { cn } from '~/utils/classNames'
 import { useMDXComponent } from 'next-contentlayer/hooks'
@@ -30,35 +31,20 @@ const components = {
     />
   ),
   h3: ({ className, ...props }: React.HTMLAttributes<HTMLHeadingElement>) => (
-    <h3
-      className={cn('mt-8 scroll-m-20 text-2xl font-semibold tracking-tight', className)}
-      {...props}
-    />
+    <h3 className={cn('mt-8 scroll-m-20 text-2xl font-semibold tracking-tight', className)} {...props} />
   ),
   h4: ({ className, ...props }: React.HTMLAttributes<HTMLHeadingElement>) => (
-    <h4
-      className={cn('mt-8 scroll-m-20 text-xl font-semibold tracking-tight', className)}
-      {...props}
-    />
+    <h4 className={cn('mt-8 scroll-m-20 text-xl font-semibold tracking-tight', className)} {...props} />
   ),
   h5: ({ className, ...props }: React.HTMLAttributes<HTMLHeadingElement>) => (
-    <h5
-      className={cn('mt-8 scroll-m-20 text-lg font-semibold tracking-tight', className)}
-      {...props}
-    />
+    <h5 className={cn('mt-8 scroll-m-20 text-lg font-semibold tracking-tight', className)} {...props} />
   ),
   h6: ({ className, ...props }: React.HTMLAttributes<HTMLHeadingElement>) => (
-    <h6
-      className={cn('mt-8 scroll-m-20 text-base font-semibold tracking-tight', className)}
-      {...props}
-    />
+    <h6 className={cn('mt-8 scroll-m-20 text-base font-semibold tracking-tight', className)} {...props} />
   ),
   a: ({ className, ...props }: React.HTMLAttributes<HTMLAnchorElement>) => (
     <a
-      className={cn(
-        'font-medium text-neutral-900 underline underline-offset-4 dark:text-neutral-50',
-        className
-      )}
+      className={cn('font-medium text-neutral-900 underline underline-offset-4 dark:text-neutral-50', className)}
       {...props}
     />
   ),
@@ -95,10 +81,7 @@ const components = {
     </div>
   ),
   tr: ({ className, ...props }: React.HTMLAttributes<HTMLTableRowElement>) => (
-    <tr
-      className={cn('m-0 border-t border-neutral-300 p-0 even:bg-neutral-100', className)}
-      {...props}
-    />
+    <tr className={cn('m-0 border-t border-neutral-300 p-0 even:bg-neutral-100', className)} {...props} />
   ),
   th: ({ className, ...props }: React.HTMLAttributes<HTMLTableCellElement>) => (
     <th
@@ -136,7 +119,6 @@ const components = {
         {/* header */}
         <div className="flex items-center justify-between bg-neutral-900 px-4 py-2 dark:bg-neutral-800">
           <h2 className="flex max-w-[80%] items-center space-x-2">
-            {/* meta */}
             {/* icon */}
             {__withMeta__ && __filename__ ? (
               <>
@@ -156,18 +138,13 @@ const components = {
             <CopyButton
               value={__rawString__}
               src={__src__}
-              className={cn(
-                'border-none text-neutral-300 opacity-50 hover:bg-transparent hover:opacity-100'
-              )}
+              className={cn('border-none text-neutral-300 opacity-50 hover:bg-transparent hover:opacity-100')}
             />
           )}
         </div>
         {/* code */}
         <pre
-          className={cn(
-            'overflow-x-auto bg-neutral-900 px-2 py-4 !font-mono dark:bg-black sm:px-4',
-            className
-          )}
+          className={cn('overflow-x-auto bg-neutral-900 px-2 py-4 !font-mono dark:bg-black sm:px-4', className)}
           {...props}
         />
       </div>
@@ -182,10 +159,9 @@ const components = {
       {...props}
     />
   ),
-  Steps: ({ ...props }) => (
-    <div className="[&>h3]:step mb-12 ml-4 border-l pl-8 [counter-reset:step]" {...props} />
-  ),
-  Image
+  Steps: ({ ...props }) => <div className="[&>h3]:step mb-12 ml-4 border-l pl-8 [counter-reset:step]" {...props} />,
+  Image,
+  Link
 }
 
 export function Mdx({ code, className }: MdxProps) {

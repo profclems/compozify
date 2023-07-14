@@ -42,11 +42,7 @@ export function rehypeComponent() {
         )
 
         const extractClassname = getNodeAttributeByName(node, 'extractClassname')
-        if (
-          extractClassname &&
-          typeof extractClassname.value !== 'undefined' &&
-          extractClassname.value !== 'false'
-        ) {
+        if (extractClassname && typeof extractClassname.value !== 'undefined' && extractClassname.value !== 'false') {
           // Extract className from string
           // TODO: Use @swc/core and a visitor to extract this.
           // For now, a simple regex should do.

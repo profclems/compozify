@@ -16,5 +16,14 @@ export const docsConfig: DocsConfig = {
       href: '/docs/installation'
     }
   ],
-  Commands: []
+  Commands: [
+    {
+      title: 'Compozify',
+      href: '/docs/commands/compozify'
+    },
+    {
+      title: 'Convert',
+      href: '/docs/commands/compozify-convert'
+    }
+  ]
 }
