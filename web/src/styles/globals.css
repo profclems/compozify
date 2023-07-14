@@ -2,7 +2,7 @@
 @import 'tailwindcss/base';
 
 /*! purgecss start ignore */
-
+@import 'mdx.css';
 /*! purgecss end ignore */
 
 @import 'tailwindcss/components';

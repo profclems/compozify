@@ -9,23 +9,29 @@ interface Store {
   setTitleInView: (value: boolean) => void
   compose: () => void
   code?: string
+  menu: boolean
+  setMenu: (value: boolean) => void
 }
 
 const StoreContext = createContext<Store>({
   titleInView: false,
   setTitleInView: () => {},
   compose: () => {},
-  code: undefined
+  code: undefined,
+  menu: false,
+  setMenu: () => {}
 })
 
 export function StoreProvider({ children }: { children: ReactNode }) {
   const mounted = useMounted()
   const [titleInView, setTitleInView] = useState(false)
   const [code, setCode] = useState<undefined | string>(undefined)
+  const [menu, setMenu] = useState(false)
 
   const compose = useCallback(async () => {
     try {
       const response = await fetch('/api/compose', {
+        mode: 'cors',
         method: 'GET',
         headers: {
           'Content-Type': 'application/json'
@@ -46,9 +52,11 @@ export function StoreProvider({ children }: { children: ReactNode }) {
       titleInView,
       setTitleInView,
       compose,
-      code
+      code,
+      menu,
+      setMenu
     }),
-    [code, compose, titleInView]
+    [code, compose, titleInView, menu]
   )
 
   if (!mounted) return null

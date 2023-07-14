@@ -40,6 +40,13 @@ module.exports = {
         '9xl': '100rem',
         '10xl': '110rem',
         '11xl': '120rem'
+      },
+      transitionProperty: {
+        height: 'height',
+        width: 'width',
+        spacing: 'margin, padding',
+        maxHeight: 'max-height',
+        maxWidth: 'max-width'
       }
     }
   },

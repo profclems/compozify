@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 const path = require('path')
+const { withContentlayer } = require('next-contentlayer')
 const runtimeCaching = require('next-pwa/cache')
 const withPWA = require('next-pwa')({
   dest: 'public',
@@ -10,6 +11,7 @@ const withPWA = require('next-pwa')({
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
+  swcMinify: true,
   images: { disableStaticImages: true },
   webpack: (config, { defaultLoaders }) => {
     // clear cache
@@ -19,7 +21,12 @@ const nextConfig = {
     config.resolve.modules.push(path.resolve(`./`))
 
     return config
+  },
+  async redirects() {
+    return require('./redirects.json')
   }
 }
 
-module.exports = withPWA(nextConfig)
+const withALL = (nextConfig = {}) => withContentlayer(withPWA(nextConfig))
+
+module.exports = withALL(nextConfig)

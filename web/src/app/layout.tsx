@@ -80,7 +80,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                   }}
                 />
               </div>
-              <Navbar className={cn('fixed z-[4] top-0 inset-x-0')} />
+              <Navbar className={cn('sticky z-[4] top-0 inset-x-0 bg-white/90 dark:bg-neutral-800/90')} />
               <div className="relative inset-0 z-[3] min-h-screen w-full">{children}</div>
             </div>
           </main>
