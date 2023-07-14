@@ -70,7 +70,7 @@ func convertRun(opts *convertOpts) (err error) {
 	log.Info().Msg("Parsing Docker run command")
 	log.Debug().Msgf("Docker run command: %s", opts.Command)
 
-	parser, err := parser.NewParser(opts.Command)
+	parser, err := parser.New(opts.Command)
 	if err != nil {
 		return err
 	}

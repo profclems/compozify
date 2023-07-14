@@ -32,8 +32,8 @@ func (p *Parser) SetVersion(v string) {
 	p.version = v
 }
 
-// NewParser creates a new Parser.
-func NewParser(s string) (*Parser, error) {
+// New creates a new Parser.
+func New(s string) (*Parser, error) {
 	s = strings.TrimPrefix(strings.TrimSpace(s), "docker run")
 	if s == "" {
 		return nil, errors.New("empty docker command")
