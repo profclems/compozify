@@ -51,3 +51,7 @@ completions: build
 .PHONY: manpage
 manpage: ## Generate manual pages
 	go run -trimpath -ldflags "$(GO_LDFLAGS)" ./cmd/gen-docs/main.go --manpage --path ./share/man/man1
+
+.PHONY: docs
+docs: ## Generate web docs
+	go run ./cmd/gen-docs/main.go --path ./docs
