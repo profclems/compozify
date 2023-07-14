@@ -87,7 +87,8 @@ export default function Home() {
                 autoComplete="off"
                 {...register('command', {
                   required: true,
-                  validate: value => value.startsWith('docker run')
+                  validate: value =>
+                    value.startsWith('docker run') || 'Must start with “docker run”'
                 })}
                 ref={commandInputRef}
                 placeholder={`(Press “/” to focus)`}

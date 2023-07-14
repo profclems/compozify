@@ -71,7 +71,13 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                   alt="Background parttern"
                   loading="eager"
                   fill
-                  style={{ position: 'absolute', inset: 0, width: '100%', height: '100%' }}
+                  style={{
+                    position: 'absolute',
+                    inset: 0,
+                    width: '100%',
+                    height: '100%',
+                    transform: 'rotate(45deg)'
+                  }}
                 />
               </div>
               <Navbar className={cn('fixed z-[4] top-0 inset-x-0')} />
