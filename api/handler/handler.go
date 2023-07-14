@@ -3,8 +3,9 @@ package handler
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/profclems/compozify/pkg/parser"
 	"net/http"
+
+	"github.com/profclems/compozify/pkg/parser"
 )
 
 type DockerCommand struct {
@@ -16,28 +17,32 @@ func ParseDockerCommand(w http.ResponseWriter, r *http.Request) {
 	err := json.NewDecoder(r.Body).Decode(&dockerCmd)
 
 	if err != nil {
-		http.Error(w, "Error reading request body",
-			http.StatusInternalServerError)
+		http.Error(w, fmt.Sprintf("Error decoding request body: %v", err), http.StatusBadRequest)
 		return
 	}
 
-	dockerCommand := dockerCmd.Command
+	// Validate the command.
+	if dockerCmd.Command == "" {
+		http.Error(w, "Docker command cannot be empty", http.StatusBadRequest)
+		return
+	}
+
 	// Create a new Parser
-	p, err := parser.NewParser(dockerCommand)
+	p, err := parser.NewParser(dockerCmd.Command)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
+		http.Error(w, fmt.Sprintf("Error creating parser: %v", err), http.StatusBadRequest)
 		return
 	}
 
 	// Parse the Docker command
 	err = p.Parse()
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
+		http.Error(w, fmt.Sprintf("Error parsing command: %v", err), http.StatusBadRequest)
 		return
 	}
 
 	dockerComposeYaml := p.String()
 
-	w.Header().Set("Content-Type", "application/json")
-	fmt.Fprintf(w, `{"compose": "%s"}`, dockerComposeYaml)
+	w.Header().Set("Content-Type", "application/x-yaml")
+	w.Write([]byte(dockerComposeYaml))
 }
