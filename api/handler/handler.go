@@ -3,6 +3,7 @@ package handler
 import (
 	"encoding/json"
 	"fmt"
+	"log"
 	"net/http"
 
 	"github.com/profclems/compozify/pkg/parser"
@@ -44,5 +45,9 @@ func ParseDockerCommand(w http.ResponseWriter, r *http.Request) {
 	dockerComposeYaml := p.String()
 
 	w.Header().Set("Content-Type", "application/x-yaml")
-	w.Write([]byte(dockerComposeYaml))
+	_, err = w.Write([]byte(dockerComposeYaml))
+	if err != nil {
+		log.Printf("Unable to write response: %v", err)
+		return
+	}
 }
