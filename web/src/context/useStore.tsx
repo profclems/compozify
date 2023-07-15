@@ -2,6 +2,7 @@
 
 import { createContext, ReactNode, useCallback, useContext, useEffect, useMemo, useState } from 'react'
 import { ThemeProvider as Theme } from 'next-themes'
+import { stringify } from 'yaml'
 import useMounted from '~/hooks/useMounted'
 import { ErrorCause } from '~/types/nav'
 
@@ -43,13 +44,12 @@ export function StoreProvider({ children }: { children: ReactNode }) {
   }, [error])
 
   const compose = useCallback(async (command: string) => {
-    console.log(command)
     try {
       const response = await fetch('/api/parse', {
         mode: 'cors',
-        method: 'GET',
+        method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ command })
+        body: JSON.stringify({ command: command })
       })
 
       // throw error if response is not ok to trigger catch block
@@ -57,7 +57,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
 
       // get response body and handle it here
       const body = await response.json()
-      setCode(JSON.stringify(body))
+      setCode(body && body.output ? stringify(body.output) : undefined)
     } catch (error) {
       let err: ErrorCause
       if (error instanceof Error) err = error as ErrorCause

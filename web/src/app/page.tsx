@@ -8,7 +8,8 @@ import { cn } from '~/utils/classNames'
 import { useInView } from 'framer-motion'
 import { SubmitHandler, useForm } from 'react-hook-form'
 import { FaDocker } from 'react-icons/fa'
-import { Mdx } from '~/components/mdx'
+import CopyButton from '~/components/CopyButton'
+import { LiaFileInvoiceSolid } from 'react-icons/lia'
 
 export default function Home() {
   const { titleInView: t, setTitleInView, compose, code, error } = useStore()
@@ -54,10 +55,6 @@ export default function Home() {
     else setLoading(false)
   }, [isSubmitting, isValid])
 
-  useEffect(() => {
-    console.log(errors)
-  }, [errors])
-
   const onSubmit: SubmitHandler<CommandInput> = data => compose(data.command).finally(() => setLoading(false))
 
   return (
@@ -74,7 +71,7 @@ export default function Home() {
         </div>
       </header>
       {/* main */}
-      <main className="px-5 sm:px-8 lg:px-16">
+      <div className="px-5 sm:px-8 lg:px-16">
         {/* form */}
         <form action="#" method="post" onSubmit={handleSubmit(onSubmit)} className="">
           <div className="mx-auto max-w-lg space-y-4 px-2">
@@ -123,20 +120,34 @@ export default function Home() {
             {errors.command && <p className="text-red-500">{errors.command.message}</p>}
           </div>
         </form>
-
-        {/* data from fetch */}
-        <div className="">
-          <div className="mx-auto max-w-lg space-y-4 px-2">
-            {code && <Mdx code={`\`\`\`yaml title="docker-compose.yaml"\n${code}\n\`\`\``} />}
-            {error && (
-              <div className="flex flex-col gap-4">
-                <p className="text-red-500">{error.message}</p>
-                <p className="text-red-500">Error code: {error.code}</p>
+      </div>
+      {/* data from fetch */}
+      <div className="mt-4">
+        <div className="mx-auto max-w-lg space-y-4 px-2">
+          {code && (
+            <div className="my-4 rounded border border-neutral-900 dark:border-neutral-800">
+              {/* header */}
+              <div className="flex items-center justify-between bg-neutral-900 px-4 py-2 dark:bg-neutral-800">
+                <h2 className="flex max-w-[80%] items-center space-x-2">
+                  <LiaFileInvoiceSolid className="h-4 w-auto text-white" aria-hidden />
+                  <span className="text-neutral-400">docker-compose.yaml</span>
+                </h2>
+                <CopyButton
+                  value={code}
+                  className={cn('border-none text-neutral-300 opacity-50 hover:bg-transparent hover:opacity-100')}
+                />
               </div>
-            )}
-          </div>
+              <pre className="overflow-x-auto bg-neutral-900 px-2 py-4 !font-mono dark:bg-black sm:px-4">{code}</pre>
+            </div>
+          )}
+          {error && (
+            <div className="flex flex-col gap-4">
+              <p className="text-red-500">{error.message}</p>
+              <p className="text-red-500">Error code: {error.code}</p>
+            </div>
+          )}
         </div>
-      </main>
+      </div>
     </main>
   )
 }
