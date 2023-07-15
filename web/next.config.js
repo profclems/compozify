@@ -10,6 +10,8 @@ const withPWA = require('next-pwa')({
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  output: 'export',
+  images: { unoptimized: true },
   webpack: (config, { defaultLoaders }) => {
     // clear cache
     defaultLoaders.babel.options.cache = false
@@ -18,10 +20,10 @@ const nextConfig = {
     config.resolve.modules.push(path.resolve(`./`))
 
     return config
-  },
-  async redirects() {
-    return require('./redirects.json')
   }
+  // async redirects() {
+  //   return require('./redirects.json')
+  // }
 }
 
 const withALL = (nextConfig = {}) => withContentlayer(withPWA(nextConfig))

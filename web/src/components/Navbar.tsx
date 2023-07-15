@@ -44,7 +44,7 @@ export default function Navbar({ className }: { className?: string }) {
             <FaGithub className={cn('h-6 w-auto')} />
           </Link>
           <Link
-            href="/docs"
+            href="/docs/installation"
             className={cn('relative px-2 py-1', pathname.startsWith('/docs') && 'bg-zinc-800 text-white')}
           >
             Docs
