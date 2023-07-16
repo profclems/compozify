@@ -12,6 +12,7 @@
 /.next/
 /out/
 /.swc/
+/dist/
 
 # production
 /build
