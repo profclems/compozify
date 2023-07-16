@@ -11,6 +11,7 @@ const withPWA = require('next-pwa')({
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   output: 'export',
+  distDir: 'dist',
   images: { unoptimized: true },
   webpack: (config, { defaultLoaders }) => {
     // clear cache
