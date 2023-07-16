@@ -1,10 +1,11 @@
 import Image from 'next/image'
 import Link from 'next/link'
-import CopyButton from '~/components/CopyButton'
+import CopyButton from '~/components/copy-button'
 import { cn } from '~/utils/classNames'
 import { useMDXComponent } from 'next-contentlayer/hooks'
 import { HiTerminal } from 'react-icons/hi'
 import { LiaFileInvoiceSolid } from 'react-icons/lia'
+import CustomLink from '~/components/custom-link'
 
 interface MdxProps {
   code: string
@@ -138,7 +139,7 @@ const components = {
             <CopyButton
               value={__rawString__}
               src={__src__}
-              className={cn('border-none text-neutral-300 opacity-50 hover:bg-transparent hover:opacity-100')}
+              className={cn('border-none text-white opacity-50 hover:bg-transparent hover:opacity-100')}
             />
           )}
         </div>
@@ -161,7 +162,8 @@ const components = {
   ),
   Steps: ({ ...props }) => <div className="[&>h3]:step mb-12 ml-4 border-l pl-8 [counter-reset:step]" {...props} />,
   Image,
-  Link
+  Link,
+  CustomLink
 }
 
 export function Mdx({ code, className }: MdxProps) {

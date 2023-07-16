@@ -8,7 +8,7 @@ import { cn } from '~/utils/classNames'
 import { useInView } from 'framer-motion'
 import { SubmitHandler, useForm } from 'react-hook-form'
 import { FaDocker } from 'react-icons/fa'
-import CopyButton from '~/components/CopyButton'
+import CopyButton from '~/components/copy-button'
 import { LiaFileInvoiceSolid } from 'react-icons/lia'
 
 export default function Home() {
@@ -90,10 +90,6 @@ export default function Home() {
                   pattern: {
                     value: /^docker run .+$/i,
                     message: 'Enter a valid docker command starting with “docker run”'
-                  },
-                  minLength: {
-                    value: 10,
-                    message: 'Please enter a valid docker command starting with “docker run”'
                   }
                 })}
                 placeholder={`(Press “/” to focus)`}

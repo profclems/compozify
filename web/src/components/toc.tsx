@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useState } from 'react'
 import Link from 'next/link'
-import { ScrollToTopWithBlog } from '~/components/ScrollTop'
+import { ScrollToTopWithDocs } from '~/components/scroll-to-top'
 import { cn } from '~/utils/classNames'
 import clsx from 'clsx'
 import { TableOfContents } from 'lib/toc'
@@ -50,7 +50,7 @@ export function DocsTableOfContents({ toc, className }: TocProps) {
             />
           </Link>
           {/* scroll to top */}
-          <ScrollToTopWithBlog />
+          <ScrollToTopWithDocs />
         </span>
         <Tree tree={toc} activeItem={activeHeading} />
       </div>
@@ -100,13 +100,13 @@ interface TreeProps {
 }
 
 function Tree({ tree, level = 1, activeItem }: TreeProps) {
-  // const [blogpagemenutoogle, setBlogpagemenutoogle] = useStore(
-  //   state => [state.blogpagemenutoogle, state.setBlogpagemenutoogle],
-  //   shallow
-  // )
-
-  return tree?.items?.length && level < 3 ? (
-    <ul className={cn('m-0 list-none', { 'pl-2': level !== 1 })}>
+  return tree?.items?.length && level < 4 ? (
+    <ul
+      className={cn('m-0 list-none', { 'pl-2': level !== 1 })}
+      style={{
+        paddingLeft: `${level * 0.5}rem`
+      }}
+    >
       {tree.items.map((item, index) => {
         return (
           <li key={index} className={clsx('mt-0 pt-2')}>

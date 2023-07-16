@@ -62,7 +62,7 @@ export default function ScrollTop({
   )
 }
 
-export function ScrollToTopWithBlog({
+export function ScrollToTopWithDocs({
   className,
   disableOnRoutes,
   disableOnLayouts

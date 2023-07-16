@@ -6,7 +6,7 @@ module.exports = {
   experimental: {
     optimizeUniversalDefaults: true
   },
-  content: ['./src/**/*.{js,jsx,ts,tsx,vue,mdx,md}'],
+  content: ['./src/**/*.{js,jsx,ts,tsx,vue,mdx,md}', './content/**/*.{js,jsx,ts,tsx,vue,mdx,md}'],
   darkMode: 'class', // or 'media' or 'class
   theme: {
     screens: {
