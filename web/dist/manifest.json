@@ -1,0 +1,21 @@
+{
+  "name": "compozify",
+  "short_name": "compozify",
+  "orientation": "portrait",
+  "start_url": ".",
+  "theme_color": "#ff7b00",
+  "background_color": "#ffffff00",
+  "display": "standalone",
+  "icons": [
+    {
+      "src": "/favicon.ico",
+      "sizes": "1080x1080",
+      "type": "image/x-icon"
+    },
+    {
+      "src": "/icons/icon.png",
+      "sizes": "1080x1080",
+      "type": "image/png"
+    }
+  ]
+}

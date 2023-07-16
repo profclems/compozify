@@ -52,3 +52,6 @@ pnpm-lock.yaml
 
 # Contentlayer
 .contentlayer
+
+# commit directory dist with content for github pages
+!/dist
