@@ -45,8 +45,11 @@ export default function Navbar({ className }: { className?: string }) {
             <FaGithub className={cn('h-6 w-auto')} />
           </Link>
           <CustomLink
-            href="/docs/installation"
+            // href="/docs/installation"
+            href="https://github.com/profclems/compozify/tree/main/docs/compozify.md"
             className={cn('relative px-2 py-1', pathname.startsWith('/docs') && 'bg-zinc-800 text-white')}
+            target="_blank"
+            rel="noopener noreferrer"
           >
             Docs
           </CustomLink>
