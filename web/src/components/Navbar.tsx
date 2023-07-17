@@ -2,14 +2,15 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
+import { HiDesktopComputer, HiMoon, HiSun } from 'react-icons/hi'
+import { AnimatePresence, LayoutGroup, motion } from 'framer-motion'
+import { FaGithub } from 'react-icons/fa'
+import { useTheme } from 'next-themes'
 import MobileSideNav from '~/components/mobile-side-nav'
 import { siteConfig } from '~/config/site'
 import useStore from '~/context/useStore'
 import { cn } from '~/utils/classNames'
-import { AnimatePresence, LayoutGroup, motion } from 'framer-motion'
-import { useTheme } from 'next-themes'
-import { FaGithub } from 'react-icons/fa'
-import { HiDesktopComputer, HiMoon, HiSun } from 'react-icons/hi'
+import CustomLink from '~/components/custom-link'
 
 export default function Navbar({ className }: { className?: string }) {
   const { theme, setTheme } = useTheme()
@@ -43,12 +44,12 @@ export default function Navbar({ className }: { className?: string }) {
           <Link href={siteConfig.links.github} target="_blank" rel="noopener noreferrer">
             <FaGithub className={cn('h-6 w-auto')} />
           </Link>
-          <Link
+          <CustomLink
             href="/docs/installation"
             className={cn('relative px-2 py-1', pathname.startsWith('/docs') && 'bg-zinc-800 text-white')}
           >
             Docs
-          </Link>
+          </CustomLink>
         </ul>
         {/* theme */}
         <LayoutGroup>

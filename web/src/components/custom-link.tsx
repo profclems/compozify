@@ -3,13 +3,10 @@
 import { forwardRef, ReactNode } from 'react'
 import Link, { LinkProps } from 'next/link'
 import { cn } from '~/utils/classNames'
-import { Url } from 'url'
 
-type CustomLinkProps = {
+export interface CustomLinkProps extends Omit<React.AnchorHTMLAttributes<HTMLAnchorElement>, 'href'>, LinkProps {
   className?: string
   children: ReactNode
-  href: Url
-  props: LinkProps
 }
 
 const CustomLink = forwardRef<HTMLAnchorElement, CustomLinkProps>(({ className, children, ...props }, ref) => {

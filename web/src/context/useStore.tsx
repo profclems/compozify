@@ -55,9 +55,10 @@ export function StoreProvider({ children }: { children: ReactNode }) {
       // throw error if response is not ok to trigger catch block
       if (!response.ok) throw new Error('Failed to generate response')
 
+      type Res = undefined | { output?: string }
       // get response body and handle it here
-      const body = await response.json()
-      setCode(body && body.output ? stringify(body.output) : undefined)
+      const body: Res = await response.json()
+      setCode(body && body.output ? stringify((body.output || '').replace(/^\s*\|/, '')) : undefined)
     } catch (error) {
       let err: ErrorCause
       if (error instanceof Error) err = error as ErrorCause

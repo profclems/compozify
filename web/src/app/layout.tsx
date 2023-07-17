@@ -13,7 +13,7 @@ export const metadata: Metadata = {
     default: siteConfig.name,
     template: `%s - ${siteConfig.name}`
   },
-  description: siteConfig.description,
+  description: siteConfig.description.long,
   keywords: ['docker', 'compose.yml', 'devops'],
   authors: [
     {

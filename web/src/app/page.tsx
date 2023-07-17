@@ -10,6 +10,7 @@ import { SubmitHandler, useForm } from 'react-hook-form'
 import { FaDocker } from 'react-icons/fa'
 import CopyButton from '~/components/copy-button'
 import { LiaFileInvoiceSolid } from 'react-icons/lia'
+import CustomLink from '~/components/custom-link'
 
 export default function Home() {
   const { titleInView: t, setTitleInView, compose, code, error } = useStore()
@@ -66,7 +67,20 @@ export default function Home() {
             <h1 ref={titleRef} className="text-center text-4xl font-bold uppercase">
               {siteConfig.name}
             </h1>
-            <p className="text-center text-lg">{siteConfig.description}</p>
+            <p className="text-center text-lg">
+              Say goodbye to complex{' '}
+              <CustomLink
+                href="https://docs.docker.com/engine/reference/run/"
+                target="_blank"
+                rel="noreferrer noopener"
+              >
+                <em className="px-0.5 bg-zinc-500/20 font-bold">docker run</em>
+              </CustomLink>
+              commands and embrace the power of{' '}
+              <em className="px-0.5 bg-zinc-300/20 font-bold">$ docker-compose up!</em>. Compozify generates a clean and
+              concise <em className="px-0.5 bg-zinc-300/20 font-bold">docker-compose.yml</em> file for you from your
+              docker run commands.
+            </p>
           </div>
         </div>
       </header>
@@ -78,7 +92,16 @@ export default function Home() {
             {/* label */}
             <div className={cn('flex flex-col gap-5')}>
               <label htmlFor="command-input" className="font-bold">
-                Enter Command to Generate `<em>docker-compose.yml</em>` *
+                Paste your{' '}
+                <CustomLink
+                  href="https://docs.docker.com/engine/reference/run/"
+                  target="_blank"
+                  rel="noreferrer noopener"
+                  className="px-1 bg-zinc-300/20 font-bold"
+                >
+                  docker run
+                </CustomLink>{' '}
+                command below!
               </label>
               {/* input */}
               <input
@@ -129,11 +152,13 @@ export default function Home() {
                   <span className="text-neutral-400">docker-compose.yaml</span>
                 </h2>
                 <CopyButton
-                  value={code}
-                  className={cn('border-none text-neutral-300 opacity-50 hover:bg-transparent hover:opacity-100')}
+                  value={code.replace(/^\s*\|/, '')}
+                  className={cn('border-none text-white opacity-50 hover:bg-transparent hover:opacity-100')}
                 />
               </div>
-              <pre className="overflow-x-auto bg-neutral-900 px-2 py-4 !font-mono dark:bg-black sm:px-4">{code}</pre>
+              <pre className="overflow-x-auto bg-neutral-900 text-white px-2 py-4 !font-mono dark:bg-black sm:px-4">
+                {code.replace(/^\s*\|/, '')}
+              </pre>
             </div>
           )}
           {error && (
