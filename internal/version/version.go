@@ -35,5 +35,5 @@ func (v Info) String() string {
 }
 
 func (v Info) IsDev() bool {
-	return v.String() == "DEV"
+	return v.version == "DEV"
 }
