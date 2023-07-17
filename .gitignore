@@ -32,6 +32,3 @@ compose.yml
 yarn.lock
 package-lock.json
 pnpm-lock.yaml
-
-# commit file in web/dist
-!/web/dist
