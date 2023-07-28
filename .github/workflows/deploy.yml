@@ -37,7 +37,7 @@ jobs:
 
       - name: Test Release
         uses: goreleaser/goreleaser-action@v4
-        if: !startsWith(github.ref, 'refs/head/v')
+        if: "!startsWith(github.ref, 'refs/head/v')"
         with:
           version: latest
           args: release --snapshot
