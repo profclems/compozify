@@ -3,10 +3,11 @@ package main
 import (
 	"context"
 	"flag"
+	"net"
+
 	"github.com/profclems/compozify/api"
 	"github.com/profclems/compozify/internal/utils"
 	"github.com/profclems/compozify/web"
-	"net"
 )
 
 var serverAddr = flag.String("addr", ":8080", "server address of the api gateway and frontend app")
