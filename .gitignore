@@ -8,6 +8,12 @@
 /dist
 /share
 
+# man pages
+/share/man/man1
+
+# changelog file generated during release
+/CHANGELOG.md
+
 # Test binary, built with `go test -c`
 *.test
 
