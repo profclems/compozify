@@ -49,7 +49,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           version: latest
-          args: release --release-notes=CHANGELOG.md
+          args: release --clean --release-notes=CHANGELOG.md
 
       - name: Bump Homebrew formula
         uses: mislav/bump-homebrew-formula-action@v1
