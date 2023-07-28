@@ -37,9 +37,7 @@ jobs:
 
       - name: Test Release
         uses: goreleaser/goreleaser-action@v4
-        if: startsWith(github.ref, 'refs/head/main')
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        if: !startsWith(github.ref, 'refs/head/v')
         with:
           version: latest
           args: release --snapshot
@@ -47,6 +45,8 @@ jobs:
       - name: Release
         uses: goreleaser/goreleaser-action@v4
         if: startsWith(github.ref, 'refs/tags/v')
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           version: latest
           args: release --release-notes=CHANGELOG.md
