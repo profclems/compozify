@@ -12,6 +12,21 @@ Compozify is a simple (yet complicated) tool to generate a `docker-compose.yml` 
 ## Installation
 Download a binary suitable for your OS at the [releases page](https://github.com/profclems/compozify/releases/latest).
 
+### Quick install
+#### Linux and macOS
+```sh
+curl -sfL https://raw.githubusercontent.com/profclems/compozify/main/install.sh | sh
+```
+
+#### Windows (PowerShell)
+Open a PowerShell terminal (version 5.1 or later) and run:
+
+```powershell
+Set-ExecutionPolicy RemoteSigned -Scope CurrentUser # Optional: Needed to run a remote script the first time
+
+irm https://raw.githubusercontent.com/profclems/compozify/main/install.ps1 | iex
+```
+
 ### From source
 
 #### Prerequisites for building from source
