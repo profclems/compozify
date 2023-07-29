@@ -10,7 +10,7 @@ before:
     - >-
       {{ if ne .Runtime.Goos "linux" }}echo{{ end }} make completions
     - >-
-      {{ if ne .Runtime.Goos "linux" }}echo{{ end }} COMPOZIFY_VERSION={{.Version}} make manpages
+      {{ if ne .Runtime.Goos "linux" }}echo{{ end }} make manpages COMPOZIFY_VERSION={{.Version}}
 
 builds:
   - id: macos #build:macos

@@ -48,8 +48,8 @@ completions: build
 	bin/compozify$(EXE) completion fish > ./share/fish/vendor_completions.d/compozify.fish
 	bin/compozify$(EXE) completion zsh > ./share/zsh/site-functions/_compozify
 
-.PHONY: manpage
-manpage: ## Generate manual pages
+.PHONY: manpages
+manpages: ## Generate manual pages
 	go run -trimpath -ldflags "$(GO_LDFLAGS)" ./cmd/gen-docs/main.go --manpage --path ./share/man/man1
 
 .PHONY: docs

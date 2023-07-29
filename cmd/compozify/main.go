@@ -2,10 +2,11 @@ package main
 
 import (
 	"context"
+	"os"
+
 	"github.com/profclems/compozify/internal/commands"
 	"github.com/profclems/compozify/internal/utils"
 	"github.com/profclems/compozify/internal/version"
-	"os"
 )
 
 func main() {
