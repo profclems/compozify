@@ -13,16 +13,15 @@ import { useEffect, useState } from 'react'
  * // isWide is true if screen width is >= 480px
  *
  */
-export default function useMedia(query: string, defaultState = false): boolean {
+export default function useMedia(query: string, defaultState: boolean = false): boolean {
   const [state, setState] = useState(defaultState)
 
   useEffect(() => {
     let mounted = true
     const mql = window.matchMedia(query)
     const onChange = () => {
-      if (!mounted) {
-        return
-      }
+      if (!mounted) return
+
       setState(mql.matches)
     }
 

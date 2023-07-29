@@ -2,7 +2,6 @@ import '~/styles/globals.css'
 
 import { Metadata } from 'next'
 import LocalFont from 'next/font/local'
-import Image from 'next/image'
 import Navbar from '~/components/Navbar'
 import { siteConfig } from '~/config/site'
 import { StoreProvider } from '~/context/useStore'
@@ -64,26 +63,9 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       <head />
       <body className="bg-white text-zinc-900 dark:bg-zinc-800 dark:text-white">
         <StoreProvider>
-          <main className="bg-white text-zinc-900 dark:bg-zinc-800 dark:text-white">
-            <div className={cn('relative')}>
-              <div className="fixed inset-0">
-                <Image
-                  src="/images/beams-2.png"
-                  alt="Background parttern"
-                  loading="eager"
-                  fill
-                  style={{
-                    position: 'absolute',
-                    inset: 0,
-                    width: '100%',
-                    height: '100%',
-                    transform: 'rotate(45deg)'
-                  }}
-                />
-              </div>
-              <Navbar className={cn('sticky inset-x-0 top-0 z-[4] bg-white/90 dark:bg-neutral-800/90')} />
-              <div className="relative inset-0 z-[3] min-h-screen w-full">{children}</div>
-            </div>
+          <main className="bg-white text-zinc-900 min-h-screen dark:bg-zinc-800 dark:text-white">
+            <Navbar className={cn('sticky inset-x-0 top-0 z-[4] bg-white/90 dark:bg-zinc-800/90')} />
+            <div className="relative w-full">{children}</div>
           </main>
         </StoreProvider>
       </body>

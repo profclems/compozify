@@ -27,9 +27,9 @@ module.exports = {
     },
     extend: {
       fontFamily: {
-        sans: ['var(--font-satoshi)', ...defaultTheme.fontFamily.sans],
+        mono: ['var(--font-satoshi)', ...defaultTheme.fontFamily.sans],
         serif: ['var(--font-lobster)', ...defaultTheme.fontFamily.serif],
-        mono: ['var(--font-mono)', ...defaultTheme.fontFamily.mono]
+        sans: ['var(--font-mono)', ...defaultTheme.fontFamily.mono]
       },
       fontSize: {
         xs: ['0.65rem', '0.75rem'],

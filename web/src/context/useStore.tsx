@@ -58,7 +58,8 @@ export function StoreProvider({ children }: { children: ReactNode }) {
       type Res = undefined | { output?: string }
       // get response body and handle it here
       const body: Res = await response.json()
-      setCode(body && body.output ? stringify((body.output || '').replace(/^\s*\|/, '')) : undefined)
+      const str = body && typeof body?.output === 'string' ? body.output.replace(/^\s*\|/, '') : undefined
+      setCode(body && body.output ? stringify(str) : undefined)
     } catch (error) {
       let err: ErrorCause
       if (error instanceof Error) err = error as ErrorCause

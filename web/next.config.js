@@ -13,6 +13,9 @@ const nextConfig = {
   output: 'export',
   distDir: process.env.NODE_ENV === 'development' ? 'out' : 'dist',
   images: { unoptimized: true },
+  experimental: {
+    serverComponentsExternalPackages: ['vscode-oniguruma', 'shiki']
+  },
   webpack: (config, { defaultLoaders }) => {
     // clear cache
     defaultLoaders.babel.options.cache = false

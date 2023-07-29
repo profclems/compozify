@@ -59,13 +59,13 @@ export default function Home() {
   const onSubmit: SubmitHandler<CommandInput> = data => compose(data.command).finally(() => setLoading(false))
 
   return (
-    <main className={cn('')}>
+    <main className={cn('space-y-8')}>
       {/* header */}
-      <header className="flex min-h-[40vh] flex-col justify-center px-5 sm:min-h-[35vh] sm:px-8 lg:px-16">
+      <header className="flex flex-col justify-center px-5 sm:px-8 lg:px-16">
         <div className="">
-          <div className="mx-auto max-w-lg space-y-8">
-            <h1 ref={titleRef} className="text-center text-4xl font-bold uppercase">
-              {siteConfig.name}
+          <div className="mx-auto max-w-5xl space-y-8">
+            <h1 ref={titleRef} className="text-center text-4xl font-bold">
+              $ {siteConfig.name}
             </h1>
             <p className="text-center text-lg">
               Say goodbye to complex{' '}
@@ -88,7 +88,7 @@ export default function Home() {
       <div className="px-5 sm:px-8 lg:px-16">
         {/* form */}
         <form action="#" method="post" onSubmit={handleSubmit(onSubmit)} className="">
-          <div className="mx-auto max-w-lg space-y-4 px-2">
+          <div className="mx-auto max-w-5xl space-y-4 px-2">
             {/* label */}
             <div className={cn('flex flex-col gap-5')}>
               <label htmlFor="command-input" className="font-bold">
@@ -122,7 +122,7 @@ export default function Home() {
               />
               <button
                 type="submit"
-                className="flex items-center justify-center space-x-4 bg-zinc-950 px-4 py-3 uppercase text-white transition-transform hover:-translate-y-0.5"
+                className="flex items-center justify-center space-x-4 bg-zinc-950 px-4 py-3 text-white transition-transform hover:-translate-y-0.5"
                 disabled={loading}
               >
                 {loading ? (
@@ -141,8 +141,8 @@ export default function Home() {
         </form>
       </div>
       {/* data from fetch */}
-      <div className="mt-4">
-        <div className="mx-auto max-w-lg space-y-4 px-2">
+      <div className="mt-4 px-5 sm:px-8 lg:px-16">
+        <div className="mx-auto max-w-5xl">
           {code && (
             <div className="my-4 rounded border border-neutral-900 dark:border-neutral-800">
               {/* header */}
