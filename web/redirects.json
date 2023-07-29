@@ -1,0 +1,7 @@
+[
+  {
+    "source": "/docs",
+    "destination": "/docs/installation",
+    "permanent": true
+  }
+]

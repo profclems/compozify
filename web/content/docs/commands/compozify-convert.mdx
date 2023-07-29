@@ -1,0 +1,57 @@
+---
+title: compozify convert
+description: convert docker run command to docker compose file
+---
+
+# compozify convert
+
+convert docker run command to docker compose file
+
+```bash
+compozify convert [flags] DOCKER_RUN_COMMAND
+```
+
+## Examples
+
+- Convert and write to stdout
+
+```bash
+compozify convert "docker run -i -t --rm alpine"
+```
+
+- Write to file
+
+```bash
+compozify convert -w "docker run -i -t --rm alpine"
+```
+
+- Write to file with custom name
+
+```bash
+compozify convert -w -o docker-compose.yml "docker run -i -t --rm alpine"
+```
+
+- Alternative usage specifying beginning of docker run command
+
+```bash
+compozify convert -w -- docker run -i -t --rm alpine
+```
+
+## Options
+
+```bash
+  -h, --help         help for convert
+  -o, --out string   output file path (default "compose.yml")
+  -w, --write        write to file
+```
+
+### Options inherited from parent commands
+
+```bash
+  -v, --verbose   verbose output
+```
+
+### SEE ALSO
+
+- <CustomLink href="/docs/commands/compozify">compozify</CustomLink> - compozify is a tool mainly for converting docker run
+  commands to docker compose files.

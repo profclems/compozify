@@ -33,3 +33,8 @@ docker-compose.yml
 compose.yml
 
 .history/
+
+# lockfile
+yarn.lock
+package-lock.json
+pnpm-lock.yaml
