@@ -3,7 +3,6 @@ package api
 import (
 	"encoding/json"
 	"fmt"
-	"io"
 	"net/http"
 	"path"
 	"strings"
@@ -87,23 +86,6 @@ func (server *Server) ParseDockerCommand(w http.ResponseWriter, r *http.Request)
 
 // appHandler is web app http handler function.
 func (server *Server) appHandler(w http.ResponseWriter, r *http.Request) {
-	header := w.Header()
-
-	header.Set("Content-Type", "text/html; charset=UTF-8")
-	header.Set("X-Content-Type-Options", "nosniff")
-	header.Set("Referrer-Policy", "same-origin")
-
-	f, err := server.assets.Open("index.html")
-	if err != nil {
-		http.Error(w, `web/ unbuilt`, http.StatusNotFound)
-		return
-	}
-	defer func() { _ = f.Close() }()
-
-	_, _ = io.Copy(w, f)
-}
-
-func (server *Server) cacheHandler(w http.ResponseWriter, r *http.Request) {
 	staticServer := http.FileServer(http.FS(server.assets))
 	header := w.Header()
 
@@ -111,7 +93,6 @@ func (server *Server) cacheHandler(w http.ResponseWriter, r *http.Request) {
 		header.Set("Content-Type", contentType)
 	}
 
-	header.Set("Cache-Control", "public, max-age=31536000")
 	header.Set("X-Content-Type-Options", "nosniff")
 	header.Set("Referrer-Policy", "same-origin")
 
