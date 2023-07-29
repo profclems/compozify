@@ -6,7 +6,6 @@ import { ScrollToTopWithDocs } from '~/components/scroll-to-top'
 import { cn } from '~/utils/classNames'
 import clsx from 'clsx'
 import { TableOfContents } from 'lib/toc'
-import { BsArrowUpRight } from 'react-icons/bs'
 
 interface TocProps {
   toc: TableOfContents
@@ -17,7 +16,7 @@ export function DocsTableOfContents({ toc, className }: TocProps) {
   const itemIds = useMemo(() => {
     if (toc && toc.items) {
       return toc.items
-        .flatMap(item => [item.url, item?.items?.map(item => item.url)])
+        .flatMap(item => [item.url, item?.items?.map(i => i.url)] || [])
         .flat()
         .filter(Boolean)
         .map(id => id?.split('#')[1])
@@ -36,22 +35,8 @@ export function DocsTableOfContents({ toc, className }: TocProps) {
       {/* Table of content */}
       <div className={cn('sticky top-16 -mt-10 max-h-[calc(var(--vh)-4rem)] space-y-2 overflow-y-auto pr-2 pt-16')}>
         <p className="text-sm font-medium uppercase">On This Page</p>
-        <span className="child:w-auto mb-4 inline-flex flex-col space-y-2">
-          {/* Docss */}
-          <Link
-            href="/docs"
-            className="group/link relative inline-flex items-center space-x-2 pb-1.5 uppercase text-neutral-600 dark:text-neutral-400"
-          >
-            <BsArrowUpRight className="h-3 w-auto" />
-            <span>Back to Docs</span>
-            <span
-              className="absolute inset-x-0 bottom-1 h-0.5 w-0 bg-current transition-width group-hover/link:w-full"
-              aria-hidden="true"
-            />
-          </Link>
-          {/* scroll to top */}
-          <ScrollToTopWithDocs />
-        </span>
+        {/* scroll to top */}
+        <ScrollToTopWithDocs />
         <Tree tree={toc} activeItem={activeHeading} />
       </div>
     </aside>
@@ -75,17 +60,13 @@ function useActiveItem(itemIds: string[]) {
 
     itemIds?.forEach(id => {
       const element = document.getElementById(id)
-      if (element) {
-        observer.observe(element)
-      }
+      if (element) observer.observe(element)
     })
 
     return () => {
       itemIds?.forEach(id => {
         const element = document.getElementById(id)
-        if (element) {
-          observer.unobserve(element)
-        }
+        if (element) observer.unobserve(element)
       })
     }
   }, [itemIds])
@@ -102,7 +83,7 @@ interface TreeProps {
 function Tree({ tree, level = 1, activeItem }: TreeProps) {
   return tree?.items?.length && level < 4 ? (
     <ul
-      className={cn('m-0 list-none', { 'pl-2': level !== 1 })}
+      className={cn('m-0 list-none', { 'pl-1.5': level !== 1 })}
       style={{
         paddingLeft: `${level * 0.5}rem`
       }}

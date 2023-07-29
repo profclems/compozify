@@ -25,7 +25,7 @@ const components = {
   h2: ({ className, ...props }: React.HTMLAttributes<HTMLHeadingElement>) => (
     <h2
       className={cn(
-        'mt-4 scroll-m-20 border-b border-b-neutral-200 pb-2 text-3xl font-semibold tracking-tight first:mt-0 dark:border-b-neutral-800',
+        'mt-4 scroll-m-20 border-b border-b-zinc-200 pb-2 text-3xl font-semibold tracking-tight first:mt-0 dark:border-b-zinc-800',
         className
       )}
       {...props}
@@ -45,7 +45,7 @@ const components = {
   ),
   a: ({ className, ...props }: React.HTMLAttributes<HTMLAnchorElement>) => (
     <a
-      className={cn('font-medium text-neutral-900 underline underline-offset-4 dark:text-neutral-50', className)}
+      className={cn('font-medium text-zinc-900 underline underline-offset-4 dark:text-zinc-50', className)}
       {...props}
     />
   ),
@@ -63,18 +63,15 @@ const components = {
   ),
   blockquote: ({ className, ...props }: React.HTMLAttributes<HTMLElement>) => (
     <blockquote
-      className={cn(
-        'mt-6 border-l-2 border-neutral-300 pl-6 italic text-neutral-800 [&>*]:text-neutral-600',
-        className
-      )}
+      className={cn('mt-6 border-l-2 border-zinc-300 pl-6 italic text-zinc-800 [&>*]:text-zinc-600', className)}
       {...props}
     />
   ),
   img: ({ className, alt, ...props }: React.ImgHTMLAttributes<HTMLImageElement>) => (
-    <img className={cn('rounded-md border border-neutral-200', className)} alt={alt} {...props} />
+    <img className={cn('rounded-md border border-zinc-200', className)} alt={alt} {...props} />
   ),
   hr: ({ ...props }: React.HTMLAttributes<HTMLHRElement>) => (
-    <hr className="my-4 border-neutral-200 dark:border-neutral-800 md:my-8" {...props} />
+    <hr className="my-4 border-zinc-200 dark:border-zinc-800 md:my-8" {...props} />
   ),
   table: ({ className, ...props }: React.HTMLAttributes<HTMLTableElement>) => (
     <div className="my-6 w-full overflow-y-auto">
@@ -82,12 +79,12 @@ const components = {
     </div>
   ),
   tr: ({ className, ...props }: React.HTMLAttributes<HTMLTableRowElement>) => (
-    <tr className={cn('m-0 border-t border-neutral-300 p-0 even:bg-neutral-100', className)} {...props} />
+    <tr className={cn('m-0 border-t border-zinc-300 p-0 even:bg-zinc-100', className)} {...props} />
   ),
   th: ({ className, ...props }: React.HTMLAttributes<HTMLTableCellElement>) => (
     <th
       className={cn(
-        'border border-neutral-200 px-4 py-2 text-left font-bold [&[align=center]]:text-center [&[align=right]]:text-right',
+        'border border-zinc-200 px-4 py-2 text-left font-bold [&[align=center]]:text-center [&[align=right]]:text-right',
         className
       )}
       {...props}
@@ -96,7 +93,7 @@ const components = {
   td: ({ className, ...props }: React.HTMLAttributes<HTMLTableCellElement>) => (
     <td
       className={cn(
-        'border border-neutral-200 px-4 py-2 text-left [&[align=center]]:text-center [&[align=right]]:text-right',
+        'border border-zinc-200 px-4 py-2 text-left [&[align=center]]:text-center [&[align=right]]:text-right',
         className
       )}
       {...props}
@@ -116,20 +113,20 @@ const components = {
     __src__?: string
   }) => {
     return (
-      <div className="my-4 rounded border border-neutral-900 dark:border-neutral-800">
+      <div className="my-4 rounded border border-zinc-900 dark:border-zinc-800">
         {/* header */}
-        <div className="flex items-center justify-between bg-neutral-900 px-4 py-2 dark:bg-neutral-800">
+        <div className="flex items-center justify-between bg-zinc-800 px-4 py-2 dark:bg-zinc-950">
           <h2 className="flex max-w-[80%] items-center space-x-2">
             {/* icon */}
             {__withMeta__ && __filename__ ? (
               <>
                 <LiaFileInvoiceSolid className="h-4 w-auto text-white" aria-hidden />
-                <span className="text-neutral-400">{__filename__}</span>
+                <span className="text-zinc-200">{__filename__}</span>
               </>
             ) : (
               <>
                 <HiTerminal className="h-4 w-auto text-white" aria-hidden />
-                <span className="text-neutral-400">Terminal</span>
+                <span className="text-zinc-400">Terminal</span>
               </>
             )}
           </h2>
@@ -139,13 +136,13 @@ const components = {
             <CopyButton
               value={__rawString__}
               src={__src__}
-              className={cn('border-none text-white opacity-50 hover:bg-transparent hover:opacity-100')}
+              className={cn('border-none text-white hover:bg-transparent hover:opacity-100')}
             />
           )}
         </div>
         {/* code */}
         <pre
-          className={cn('overflow-x-auto bg-neutral-900 px-2 !font-sans py-4 dark:bg-black sm:px-4', className)}
+          className={cn('overflow-x-auto bg-zinc-900 px-2 !font-sans py-4 dark:bg-black sm:px-4', className)}
           {...props}
         />
       </div>
@@ -154,7 +151,7 @@ const components = {
   code: ({ className, ...props }: React.HTMLAttributes<HTMLElement>) => (
     <code
       className={cn(
-        'relative rounded bg-neutral-100 px-[0.3rem] py-[0.2rem] !font-sans text-sm text-neutral-900 dark:bg-neutral-800 dark:text-neutral-400',
+        'relative rounded bg-zinc-100 px-[0.3rem] py-[0.2rem] !font-sans text-sm text-zinc-900 dark:bg-zinc-800 dark:text-zinc-400',
         className
       )}
       {...props}

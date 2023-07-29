@@ -46,9 +46,7 @@ export default function Navbar({ className }: { className?: string }) {
           </Link>
           <CustomLink
             href="/docs/installation"
-            target="_blank"
-            rel="noreferrer noopener"
-            className={cn('relative px-2 py-1', pathname.startsWith('/docs') && 'bg-zinc-800 text-white')}
+            className={cn('relative px-2 py-1', pathname.startsWith('/docs') && 'hidden')}
           >
             Docs
           </CustomLink>
