@@ -51,7 +51,7 @@ esac
 
 case $(uname -s) in
     Linux)
-        os="Linux"
+        os="linux"
         format="tar.gz"
         ;;
     Darwin)
