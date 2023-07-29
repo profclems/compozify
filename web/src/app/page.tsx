@@ -91,8 +91,17 @@ export default function Home() {
           <div className="mx-auto max-w-5xl space-y-4 px-2">
             {/* label */}
             <div className={cn('flex flex-col gap-5')}>
-              <label htmlFor="command-input" className="font-bold">
-                Paste your{' '}
+              <label htmlFor="command-input" className="">
+                Install{' '}
+                <CustomLink
+                  href="https://github.com/profclems/compozify#installation"
+                  target="_blank"
+                  rel="noreferrer noopener"
+                  className="px-1 bg-zinc-300/20 font-bold"
+                >
+                  the CLI
+                </CustomLink>{' '}
+                or Paste your{' '}
                 <CustomLink
                   href="https://docs.docker.com/engine/reference/run/"
                   target="_blank"
@@ -156,7 +165,7 @@ export default function Home() {
                   className={cn('border-none text-white opacity-50 hover:bg-transparent hover:opacity-100')}
                 />
               </div>
-              <pre className="overflow-x-auto bg-neutral-900 text-white px-2 py-4 !font-mono dark:bg-black sm:px-4">
+              <pre className="overflow-x-auto bg-neutral-900 !font-sans text-white px-2 py-4 dark:bg-black sm:px-4">
                 {code.replace(/^\s*\|/, '')}
               </pre>
             </div>
