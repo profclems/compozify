@@ -145,7 +145,7 @@ const components = {
         </div>
         {/* code */}
         <pre
-          className={cn('overflow-x-auto bg-neutral-900 px-2 py-4 !font-mono dark:bg-black sm:px-4', className)}
+          className={cn('overflow-x-auto bg-neutral-900 px-2 !font-sans py-4 dark:bg-black sm:px-4', className)}
           {...props}
         />
       </div>
@@ -154,7 +154,7 @@ const components = {
   code: ({ className, ...props }: React.HTMLAttributes<HTMLElement>) => (
     <code
       className={cn(
-        'relative rounded bg-neutral-100 px-[0.3rem] py-[0.2rem] !font-mono text-sm text-neutral-900 dark:bg-neutral-800 dark:text-neutral-400',
+        'relative rounded bg-neutral-100 px-[0.3rem] py-[0.2rem] !font-sans text-sm text-neutral-900 dark:bg-neutral-800 dark:text-neutral-400',
         className
       )}
       {...props}
