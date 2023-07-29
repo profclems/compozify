@@ -1,7 +1,6 @@
 'use client'
 
 import { useEffect, useMemo, useState } from 'react'
-import Link from 'next/link'
 import { ScrollToTopWithDocs } from '~/components/scroll-to-top'
 import { cn } from '~/utils/classNames'
 import clsx from 'clsx'
