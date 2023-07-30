@@ -40,9 +40,18 @@ fi
 
 machine=$(uname -m)
 
+case ${machine} in
+    x86_64)
+        machine="amd64"
+        ;;
+    aarch64)
+        machine="arm64"
+        ;;
+esac
+
 case $(uname -s) in
     Linux)
-        os="Linux"
+        os="linux"
         format="tar.gz"
         ;;
     Darwin)
@@ -72,8 +81,15 @@ else
   curl -sL "https://github.com/profclems/compozify/releases/download/v${latest}/${filename}.zip" | bsdtar -xvf - -C "${tempFolder}"
 fi
 
-printf -- "Installing %s...\n" "${tempFolder}/${filename}/bin/compozify"
-install -m755 "${tempFolder}/${filename}/bin/compozify" "${BINDIR}/compozify"
+srcDir="${tempFolder}/${filename}"
+printf -- "Installing %s...\n" "${srcDir}/bin/compozify"
+install -m755 "${srcDir}/bin/compozify" "${BINDIR}/compozify"
+
+printf -- "Installing manpages...\n"
+install -d /usr/local/man/man1/
+install -m644 "${srcDir}/share/man/man1"/compozify.1 /usr/local/man/man1/
+install -m644 "${srcDir}/share/man/man1"/compozify-convert.1 /usr/local/man/man1/
+
 
 printf "Cleaning up temp files\n"
 rm -rf "${tempFolder}"

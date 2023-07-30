@@ -55,3 +55,9 @@ manpages: ## Generate manual pages
 .PHONY: docs
 docs: ## Generate web docs
 	go run ./cmd/gen-docs/main.go --path ./docs
+
+web: ## Build web app
+	cd web && pnpm install && pnpm run build
+
+bin/compozify-web: web
+	go build -trimpath -ldflags "$(GO_LDFLAGS)" -o ./bin/compozify-web ./cmd/compozify-web
