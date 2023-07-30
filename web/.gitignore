@@ -55,3 +55,4 @@ pnpm-lock.yaml
 
 # commit directory dist with content for github pages
 /dist
+!dist/.gitkeep
