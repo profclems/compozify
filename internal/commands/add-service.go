@@ -72,6 +72,7 @@ func addServiceRun(opts *addServiceOpts) error {
 		for _, file := range expectedFiles {
 			if _, err := os.Stat(file); err == nil {
 				opts.File = file
+				readFile = true
 				opts.Logger.Info().Msgf("Found compose file: %s", file)
 				break
 			}
