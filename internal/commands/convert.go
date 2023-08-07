@@ -15,6 +15,7 @@ var defaultFilename = "compose.yml"
 type convertOpts struct {
 	Command       string
 	OutFilePath   string
+	ServiceName   string
 	Write         bool
 	AppendService bool
 
@@ -63,6 +64,7 @@ $ compozify convert -w -- docker run -i -t --rm alpine
 	}
 
 	cmd.Flags().BoolVarP(&opts.AppendService, "append-service", "a", false, "append service to existing compose file. Requires --out flag")
+	cmd.Flags().StringVarP(&opts.ServiceName, "service-name", "n", "", "Name of the service")
 	cmd.Flags().BoolVarP(&opts.Write, "write", "w", false, "write to file")
 	cmd.Flags().StringVarP(&opts.OutFilePath, "out", "o", defaultFilename, "output file path")
 
@@ -88,6 +90,10 @@ func convertRun(opts *convertOpts) (err error) {
 	p, err := parser.New(opts.Command)
 	if err != nil {
 		return err
+	}
+
+	if opts.ServiceName != "" {
+		p.SetServiceName(opts.ServiceName)
 	}
 
 	log.Info().Msg("Generating Docker compose file")
