@@ -2,7 +2,6 @@ package commands
 
 import (
 	"fmt"
-	"os"
 	"strings"
 
 	"github.com/rs/zerolog"
@@ -14,9 +13,10 @@ import (
 var defaultFilename = "compose.yml"
 
 type convertOpts struct {
-	Command     string
-	Write       bool
-	OutFilePath string
+	Command       string
+	OutFilePath   string
+	Write         bool
+	AppendService bool
 
 	Logger *zerolog.Logger
 }
@@ -53,11 +53,16 @@ $ compozify convert -w -- docker run -i -t --rm alpine
 				opts.Command = strings.Join(args, " ")
 			}
 
+			if opts.AppendService && opts.OutFilePath == "" {
+				return fmt.Errorf("--append-service requires --out flag")
+			}
+
 			return convertRun(&opts)
 		},
 		Args: cobra.MinimumNArgs(1),
 	}
 
+	cmd.Flags().BoolVarP(&opts.AppendService, "append-service", "a", false, "append service to existing compose file. Requires --out flag")
 	cmd.Flags().BoolVarP(&opts.Write, "write", "w", false, "write to file")
 	cmd.Flags().StringVarP(&opts.OutFilePath, "out", "o", defaultFilename, "output file path")
 
@@ -70,34 +75,27 @@ func convertRun(opts *convertOpts) (err error) {
 	log.Info().Msg("Parsing Docker run command")
 	log.Debug().Msgf("Docker run command: %s", opts.Command)
 
-	parser, err := parser.New(opts.Command)
+	if opts.AppendService {
+		log.Info().Msg("Appending service to existing compose file")
+		return addServiceRun(&addServiceOpts{
+			Logger:  log,
+			File:    opts.OutFilePath,
+			Command: opts.Command,
+			Write:   opts.Write,
+		})
+	}
+
+	p, err := parser.New(opts.Command)
 	if err != nil {
 		return err
 	}
 
 	log.Info().Msg("Generating Docker compose file")
-	err = parser.Parse()
+	err = p.Parse()
 	if err != nil {
 		return err
 	}
 	log.Info().Msg("Docker compose file generated")
 
-	writer := os.Stdout
-	if opts.Write {
-		log.Info().Msgf("Writing to file %s", opts.OutFilePath)
-		writer, err = os.Create(opts.OutFilePath)
-		if err != nil {
-			return err
-		}
-		defer func(writer *os.File) {
-			e := writer.Close()
-			if e != nil {
-				log.Error().Err(e).Msg("Error closing file")
-			}
-			err = e
-		}(writer)
-	}
-	fmt.Fprintf(writer, "%s", parser.String())
-
-	return err
+	return printOutput(p, log, opts.Write, opts.OutFilePath)
 }

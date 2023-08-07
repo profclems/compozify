@@ -27,9 +27,10 @@ $ compozify convert -w -- docker run -i -t --rm alpine
 ### Options
 
 ```
-  -h, --help         help for convert
-  -o, --out string   output file path (default "compose.yml")
-  -w, --write        write to file
+  -a, --append-service   append service to existing compose file. Requires --out flag
+  -h, --help             help for convert
+  -o, --out string       output file path (default "compose.yml")
+  -w, --write            write to file
 ```
 
 ### Options inherited from parent commands

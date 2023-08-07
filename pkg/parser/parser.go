@@ -17,8 +17,9 @@ var (
 
 // Parser parses a docker run command into a docker compose file format.
 type Parser struct {
-	document *yaml.Node
-	version  string
+	document     *yaml.Node
+	version      string
+	_serviceName string
 
 	refs    map[string]*yaml.Node
 	vars    *variables
@@ -32,24 +33,25 @@ func (p *Parser) SetVersion(v string) {
 	p.version = v
 }
 
+// SetServiceName sets the docker compose service name.
+func (p *Parser) SetServiceName(name string) {
+	p._serviceName = name
+}
+
+// serviceName returns the docker compose service name.
+func (p *Parser) serviceName() string {
+	if p._serviceName == "" {
+		return defaultServiceName
+	}
+	return p._serviceName
+}
+
 // New creates a new Parser.
 func New(s string) (*Parser, error) {
-	s = strings.TrimPrefix(strings.TrimSpace(s), "docker run")
-	if s == "" {
-		return nil, errors.New("empty docker command")
-	}
-
-	p := &Parser{
-		version: composeVersion,
-		refs:    make(map[string]*yaml.Node),
-		vars:    newVariables(),
-	}
-
-	command, err := parseArgs(s)
+	p, err := newParser(s)
 	if err != nil {
-		return nil, fmt.Errorf("failed to parse docker run command: %w", err)
+		return nil, err
 	}
-	p.command = command
 
 	containerTitleNode := &yaml.Node{
 		Kind:  yaml.ScalarNode,
@@ -97,6 +99,81 @@ func New(s string) (*Parser, error) {
 	p.refs["^services"] = servicesNode
 	p.refs["$service"] = containerNode
 	p.refs["$serviceTitleNode"] = containerTitleNode
+
+	return p, nil
+}
+
+// AppendToYAML converts a docker run command into a docker compose file format
+// and appends it to an existing docker compose file.
+// If the file is empty, it will create a new docker compose file.
+func AppendToYAML(b []byte, command string) (*Parser, error) {
+	if len(b) == 0 {
+		return New(command)
+	}
+
+	p, err := newParser(command)
+	if err != nil {
+		return nil, err
+	}
+
+	var yamlDoc yaml.Node
+
+	if err := yaml.Unmarshal(b, &yamlDoc); err != nil {
+		return nil, fmt.Errorf("failed to parse docker compose file: %w", err)
+	}
+
+	p.document = &yamlDoc
+
+	if p.document == nil || len(p.document.Content) == 0 {
+		return nil, errors.New("invalid docker compose file")
+	}
+
+	for i, node := range p.document.Content[0].Content {
+		if strings.ToLower(node.Value) == "services" {
+			p.refs["^services"] = p.document.Content[0].Content[i+1]
+			break
+		}
+	}
+
+	if p.refs["^services"] == nil {
+		return nil, errors.New("invalid docker compose file: missing services node")
+	}
+
+	containerTitleNode := &yaml.Node{
+		Kind:  yaml.ScalarNode,
+		Value: defaultServiceName,
+	}
+
+	containerNode := &yaml.Node{
+		Kind:    yaml.MappingNode,
+		Content: []*yaml.Node{},
+	}
+
+	p.refs["^services"].Content = append(p.refs["^services"].Content, containerTitleNode, containerNode)
+	p.refs["$service"] = containerNode
+	p.refs["$serviceTitleNode"] = containerTitleNode
+
+	return p, nil
+}
+
+// setup sets up the parser.
+func newParser(s string) (*Parser, error) {
+	s = strings.TrimPrefix(strings.TrimSpace(s), "docker run")
+	if s == "" {
+		return nil, errors.New("empty docker command")
+	}
+
+	p := &Parser{
+		version: composeVersion,
+		refs:    make(map[string]*yaml.Node),
+		vars:    newVariables(),
+	}
+
+	command, err := parseArgs(s)
+	if err != nil {
+		return nil, fmt.Errorf("failed to parse docker run command: %w", err)
+	}
+	p.command = command
 
 	return p, nil
 }
@@ -241,9 +318,12 @@ func (p *Parser) parseImage() error {
 	//  tag version, like just "glab" in the example above
 	p.command = p.command[1:] // the rest are commands
 	ns := strings.Split(image, "/")
-	serviceName := strings.SplitN(ns[len(ns)-1], ":", 2)[0]
 
-	p.refs["$serviceTitleNode"].Value = serviceName
+	if p.serviceName() == defaultServiceName {
+		p.SetServiceName(strings.SplitN(ns[len(ns)-1], ":", 2)[0])
+	}
+
+	p.refs["$serviceTitleNode"].Value = p.serviceName()
 	p.refs["$service"].Content = append(p.refs["$service"].Content, imageNode...)
 
 	if len(p.command) > 0 {
