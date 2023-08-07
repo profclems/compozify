@@ -25,6 +25,7 @@ func NewRootCmd(logger *zerolog.Logger, version version.Info) *cobra.Command {
 	cmd.PersistentFlags().BoolVarP(&verbose, "verbose", "v", version.IsDev(), "verbose output")
 
 	cmd.AddCommand(newConvertCmd(logger))
+	cmd.AddCommand(newAddServiceCmd(logger))
 
 	return cmd
 }

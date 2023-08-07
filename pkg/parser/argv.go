@@ -10,6 +10,9 @@ import (
 // (same as most other *nix shells do). This is secure in the sense that it doesn't do any
 // executing or interpeting.
 func parseArgs(str string) ([]string, error) {
+	if str == "" {
+		return []string{}, nil
+	}
 	var m []string
 	var s string
 
