@@ -2,6 +2,7 @@ package commands
 
 import (
 	"os"
+	"strings"
 
 	"github.com/rs/zerolog"
 	"github.com/spf13/cobra"
@@ -47,13 +48,18 @@ $ compozify add-service -w -f /path/to/docker-compose.yml -- docker run -i -t --
 $ compozify add-service -w -f /path/to/docker-compose.yml -n my-service "docker run -i -t --rm alpine"
 `,
 		RunE: func(cmd *cobra.Command, args []string) error {
-			if len(args) != 1 {
+			switch len(args) {
+			case 0:
 				return cmd.Help()
+			case 1:
+				opts.Command = args[0]
+			default:
+				opts.Command = strings.Join(args, " ")
 			}
-			opts.Command = args[0]
 
 			return addServiceRun(&opts)
 		},
+		Args: cobra.MinimumNArgs(1),
 	}
 
 	cmd.Flags().StringVarP(&opts.ServiceName, "service-name", "n", "", "Name of the service")
