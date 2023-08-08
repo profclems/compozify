@@ -31,9 +31,10 @@ func (server *Server) ParseDockerCommands(w http.ResponseWriter, r *http.Request
 	defer func(Body io.ReadCloser) {
 		err := Body.Close()
 		if err != nil {
-
+			logger.Err(err).Msg("Error closing request body")
 		}
 	}(r.Body)
+
 	err := json.NewDecoder(r.Body).Decode(&dockerCmds)
 	if err != nil {
 		writeError(w, logger, "Error decoding request body", err, http.StatusBadRequest)
