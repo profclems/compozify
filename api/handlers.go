@@ -3,6 +3,8 @@ package api
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/rs/zerolog"
+	"io"
 	"net/http"
 	"path"
 	"strings"
@@ -21,74 +23,66 @@ func (server *Server) ParseDockerCommands(w http.ResponseWriter, r *http.Request
 	type DockerCommands struct {
 		Commands []string `json:"commands"`
 	}
-
 	var dockerCmds DockerCommands
 
 	logger := server.logger.With().Str("handler", "ParseDockerCommands").Str("remoteAddr", r.RemoteAddr).Logger()
 	logger.Info().Msgf("%s %s %s", r.Method, r.URL.Path, r.Proto)
 
-	start := time.Now()
-	code := http.StatusOK
-	errorMsg := ""
-	defer func() {
-		log := logger.Info()
-		if errorMsg != "" {
-			log = logger.Error()
-			http.Error(w, errorMsg, code)
-		}
-		log.Msgf("Returned %d in %v", code, time.Since(start))
-	}()
+	defer func(Body io.ReadCloser) {
+		err := Body.Close()
+		if err != nil {
 
+		}
+	}(r.Body)
 	err := json.NewDecoder(r.Body).Decode(&dockerCmds)
 	if err != nil {
-		errorMsg = fmt.Sprintf("Error decoding request body: %v", err)
-		code = http.StatusBadRequest
+		writeError(w, logger, "Error decoding request body", err, http.StatusBadRequest)
 		return
 	}
+
+	start := time.Now()
+	defer logDuration(logger, start)
 
 	var p *parser.Parser
 	for _, cmd := range dockerCmds.Commands {
 		if cmd == "" {
-			errorMsg = "Docker command cannot be empty"
-			code = http.StatusBadRequest
+			writeError(w, logger, "Docker command cannot be empty", nil, http.StatusBadRequest)
 			return
 		}
 
-		// Create a new Parser or append to existing parser
 		if p == nil {
 			p, err = parser.New(cmd)
 		} else {
-			yamlBytes := []byte(p.String())
-			p, err = parser.AppendToYAML(yamlBytes, cmd)
+			p, err = parser.AppendToYAML([]byte(p.String()), cmd)
 		}
 
 		if err != nil {
-			errorMsg = fmt.Sprintf("Error parsing Docker command: %v", err)
-			code = http.StatusBadRequest
+			writeError(w, logger, "Error parsing Docker command", err, http.StatusBadRequest)
 			return
 		}
 
-		err = p.Parse()
-		if err != nil {
-			errorMsg = fmt.Sprintf("Error parsing Docker command: %v", err)
-			code = http.StatusBadRequest
+		if err := p.Parse(); err != nil {
+			writeError(w, logger, "Error parsing Docker command", err, http.StatusBadRequest)
 			return
 		}
 	}
 
-	dockerComposeYaml := p.String()
-
-	// Create the response
 	resp := Response{
-		Output: dockerComposeYaml,
+		Output: p.String(),
 	}
-
 	w.Header().Set("Content-Type", "application/json")
-	err = json.NewEncoder(w).Encode(resp)
-	if err != nil {
+	if err := json.NewEncoder(w).Encode(resp); err != nil {
 		logger.Err(err).Msg("Unable to write response")
-		return
 	}
+}
+
+func writeError(w http.ResponseWriter, logger zerolog.Logger, msg string, err error, code int) {
+	logger.Err(err).Msg(msg)
+	http.Error(w, fmt.Sprintf("%s: %v", msg, err), code)
+}
+
+func logDuration(logger zerolog.Logger, start time.Time) {
+	logger.Info().Msgf("Returned in %v", time.Since(start))
 }
 
 // appHandler is web app http handler function.
