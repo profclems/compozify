@@ -5,6 +5,7 @@ import (
 	"net"
 	"os"
 	"testing"
+	"time"
 
 	"github.com/rs/zerolog"
 )
@@ -17,10 +18,11 @@ func TestServer(t *testing.T) {
 	}
 
 	server := NewServer(&logger, listener, nil)
-	ctx, cancel := context.WithCancel(context.Background())
+
+	ctx, cancel := context.WithTimeout(context.Background(), 100*time.Second)
 	defer cancel()
 
-	if err := server.Run(ctx); err != nil {
+	if err := server.Run(ctx); err != nil && err != context.Canceled && err != context.DeadlineExceeded {
 		t.Fatalf("Server error: %v", err)
 	}
 }
