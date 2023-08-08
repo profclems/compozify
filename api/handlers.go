@@ -3,12 +3,11 @@ package api
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/profclems/compozify/pkg/parser"
 	"net/http"
 	"path"
 	"strings"
 	"time"
-
-	"github.com/profclems/compozify/pkg/parser"
 )
 
 // Response is the response body for the ParseDockerCommand handler.
@@ -16,15 +15,15 @@ type Response struct {
 	Output string `json:"output"`
 }
 
-// ParseDockerCommand parses a Docker command and returns the equivalent Docker Compose YAML.
-func (server *Server) ParseDockerCommand(w http.ResponseWriter, r *http.Request) {
-	type DockerCommand struct {
-		Command string `json:"command"`
+// ParseDockerCommands ParseDockerCommand parses a Docker command and returns the equivalent Docker Compose YAML.
+func (server *Server) ParseDockerCommands(w http.ResponseWriter, r *http.Request) {
+	type DockerCommands struct {
+		Commands []string `json:"commands"`
 	}
 
-	var dockerCmd DockerCommand
+	var dockerCmds DockerCommands
 
-	logger := server.logger.With().Str("handler", "ParseDockerCommand").Str("remoteAddr", r.RemoteAddr).Logger()
+	logger := server.logger.With().Str("handler", "ParseDockerCommands").Str("remoteAddr", r.RemoteAddr).Logger()
 	logger.Info().Msgf("%s %s %s", r.Method, r.URL.Path, r.Proto)
 
 	start := time.Now()
@@ -38,35 +37,42 @@ func (server *Server) ParseDockerCommand(w http.ResponseWriter, r *http.Request)
 		}
 		log.Msgf("Returned %d in %v", code, time.Since(start))
 	}()
-	err := json.NewDecoder(r.Body).Decode(&dockerCmd)
 
+	err := json.NewDecoder(r.Body).Decode(&dockerCmds)
 	if err != nil {
 		errorMsg = fmt.Sprintf("Error decoding request body: %v", err)
 		code = http.StatusBadRequest
 		return
 	}
 
-	// Validate the command.
-	if dockerCmd.Command == "" {
-		errorMsg = "Docker command cannot be empty"
-		code = http.StatusBadRequest
-		return
-	}
+	var p *parser.Parser
+	for _, cmd := range dockerCmds.Commands {
+		if cmd == "" {
+			errorMsg = "Docker command cannot be empty"
+			code = http.StatusBadRequest
+			return
+		}
 
-	// Create a new Parser
-	p, err := parser.New(dockerCmd.Command)
-	if err != nil {
-		errorMsg = fmt.Sprintf("Error creating parser: %v", err)
-		code = http.StatusBadRequest
-		return
-	}
+		// Create a new Parser or append to existing parser
+		if p == nil {
+			p, err = parser.New(cmd)
+		} else {
+			yamlBytes := []byte(p.String())
+			p, err = parser.AppendToYAML(yamlBytes, cmd)
+		}
 
-	// Parse the Docker command
-	err = p.Parse()
-	if err != nil {
-		errorMsg = fmt.Sprintf("Error parsing Docker command: %v", err)
-		code = http.StatusBadRequest
-		return
+		if err != nil {
+			errorMsg = fmt.Sprintf("Error parsing Docker command: %v", err)
+			code = http.StatusBadRequest
+			return
+		}
+
+		err = p.Parse()
+		if err != nil {
+			errorMsg = fmt.Sprintf("Error parsing Docker command: %v", err)
+			code = http.StatusBadRequest
+			return
+		}
 	}
 
 	dockerComposeYaml := p.String()

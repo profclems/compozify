@@ -29,7 +29,7 @@ func NewServer(logger *zerolog.Logger, listener net.Listener, assets fs.FS) *Ser
 	}
 
 	r := mux.NewRouter()
-	r.HandleFunc("/api/parse", server.ParseDockerCommand).Methods("POST")
+	r.HandleFunc("/api/parse", server.ParseDockerCommands).Methods("POST")
 	r.PathPrefix("/").HandlerFunc(server.appHandler)
 
 	server.http = http.Server{
