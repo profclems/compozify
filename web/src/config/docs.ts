@@ -24,6 +24,10 @@ export const docsConfig: DocsConfig = {
     {
       title: 'Convert',
       href: '/docs/commands/compozify-convert'
+    },
+    {
+      title: 'Add Service',
+      href: '/docs/commands/compozify-add-service'
     }
   ]
 }

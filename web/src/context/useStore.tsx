@@ -2,7 +2,6 @@
 
 import { createContext, ReactNode, useCallback, useContext, useEffect, useMemo, useState } from 'react'
 import { ThemeProvider as Theme } from 'next-themes'
-import { stringify } from 'yaml'
 import useMounted from '~/hooks/useMounted'
 import { ErrorCause } from '~/types/nav'
 
@@ -48,7 +47,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
       const response = await fetch('/api/parse', {
         mode: 'cors',
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' },
         body: JSON.stringify({ command: command })
       })
 
@@ -58,8 +57,8 @@ export function StoreProvider({ children }: { children: ReactNode }) {
       type Res = undefined | { output?: string }
       // get response body and handle it here
       const body: Res = await response.json()
-      const str = body && typeof body?.output === 'string' ? body.output.replace(/^\s*\|/, '') : undefined
-      setCode(body && body.output ? stringify(str) : undefined)
+      const str = body && typeof body?.output === 'string' ? body.output : undefined
+      setCode(str)
     } catch (error) {
       let err: ErrorCause
       if (error instanceof Error) err = error as ErrorCause
