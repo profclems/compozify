@@ -3,11 +3,12 @@ package api
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/profclems/compozify/pkg/parser"
 	"net/http"
 	"path"
 	"strings"
 	"time"
+
+	"github.com/profclems/compozify/pkg/parser"
 )
 
 // Response is the response body for the ParseDockerCommand handler.
