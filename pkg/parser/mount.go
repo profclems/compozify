@@ -1,6 +1,7 @@
 package parser
 
 import (
+	"fmt"
 	"reflect"
 	"strings"
 
@@ -64,7 +65,7 @@ func ParseMount(s string) (*Mount, error) {
 			fieldName = ""
 			for len(options) > 0 {
 				str := strings.ToUpper(options[0][:1])
-				fieldName += str + options[0][1:]
+				fieldName = fmt.Sprintf("%s%s%s", fieldName, str, options[0][1:])
 				options = options[1:]
 			}
 		}
