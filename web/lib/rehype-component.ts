@@ -4,7 +4,7 @@ import { u } from 'unist-builder'
 import { visit } from 'unist-util-visit'
 
 import { languages } from './rehype-languages'
-import { UnistNode, UnistTree } from './unist'
+import { UnistNode, UnistTree } from './toc'
 
 export function rehypeComponent() {
   return async (tree: UnistTree) => {

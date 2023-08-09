@@ -22,7 +22,7 @@ const nextConfig = {
 
     return config
   }
-  // for local development
+  // for local development - (\\d{1,}) is for port number
   // async rewrites() {
   //   return [{ source: '/api/parse', destination: 'http://localhost:8080/api/parse' }]
   // }
