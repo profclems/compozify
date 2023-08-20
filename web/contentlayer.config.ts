@@ -9,7 +9,7 @@ import { getHighlighter, loadTheme } from 'shiki'
 import { visit } from 'unist-util-visit'
 
 import { rehypeComponent } from './lib/rehype-component'
-import { UnistNode, UnistTree } from './lib/unist'
+import { UnistNode, UnistTree } from './lib/toc'
 
 /** @type {import('contentlayer/source-files').ComputedFields} */
 const computedFields: import('contentlayer/source-files').ComputedFields = {

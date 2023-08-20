@@ -18,11 +18,15 @@ export const docsConfig: DocsConfig = {
   ],
   Commands: [
     {
-      title: 'Compozify',
+      title: 'compozify',
       href: '/docs/commands/compozify'
     },
     {
-      title: 'Convert',
+      title: 'add-service',
+      href: '/docs/commands/compozify-add-service'
+    },
+    {
+      title: 'convert',
       href: '/docs/commands/compozify-convert'
     }
   ]

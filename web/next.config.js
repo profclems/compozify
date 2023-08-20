@@ -13,9 +13,6 @@ const nextConfig = {
   output: 'export',
   distDir: process.env.NODE_ENV === 'development' ? 'out' : 'dist',
   images: { unoptimized: true },
-  experimental: {
-    serverComponentsExternalPackages: ['vscode-oniguruma', 'shiki']
-  },
   webpack: (config, { defaultLoaders }) => {
     // clear cache
     defaultLoaders.babel.options.cache = false
@@ -25,6 +22,10 @@ const nextConfig = {
 
     return config
   }
+  // for local development - (\\d{1,}) is for port number
+  // async rewrites() {
+  //   return [{ source: '/api/parse', destination: 'http://localhost:8080/api/parse' }]
+  // }
 }
 
 const withALL = (nextConfig = {}) => withContentlayer(withPWA(nextConfig))

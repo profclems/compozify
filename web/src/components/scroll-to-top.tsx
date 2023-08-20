@@ -78,7 +78,7 @@ export function ScrollToTopWithDocs({
     <button
       className={clsx(
         className,
-        'group/link relative inline-flex items-center space-x-2 pb-1.5 pl-0.5 uppercase text-neutral-600 dark:text-neutral-400',
+        'group/link relative inline-flex items-center space-x-2 pb-1 pl-0.5 text-neutral-600 dark:text-neutral-400',
         disableOnRoutes && disableOnRoutes.map(route => route === pathname && 'hidden'),
         disableOnLayouts && disableOnLayouts.map(layout => pathname.startsWith(layout) && 'hidden'),
         top < 100 && 'hidden'
