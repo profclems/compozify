@@ -1,21 +1,27 @@
 'use client'
 
 import { Fragment, useEffect, useRef, useState } from 'react'
-import Spinner from '~/components/spinner'
-import { siteConfig } from '~/config/site'
-import useStore from '~/context/useStore'
-import { cn } from '~/utils/classNames'
 import { useInView } from 'framer-motion'
 import { SubmitHandler, useForm } from 'react-hook-form'
 import { FaDocker } from 'react-icons/fa'
 import CustomLink from '~/components/custom-link'
-import PreviewEditor from '~/components/editor'
+import CopyButton from '~/components/copy-button'
+import { LiaFileInvoiceSolid } from 'react-icons/lia'
+import hljs from 'highlight.js'
+import Typeit from 'typeit-react'
+import Spinner from '~/components/spinner'
+import { siteConfig } from '~/config/site'
+import useStore from '~/context/useStore'
+import { cn } from '~/utils/classNames'
+import 'highlight.js/styles/atom-one-dark.css'
+import { stripHtml } from '~/utils/stripHtml'
 
-export default function Home() {
+export default function Home(): JSX.Element {
   const { titleInView: t, setTitleInView, compose, code, error } = useStore()
   const titleRef = useRef<HTMLHeadingElement>(null)
   const titleInView = useInView(titleRef, { margin: '0px 0px -100px 0px' })
   const [loading, setLoading] = useState(false)
+  const highlightedCode = hljs.highlight(code || '', { language: 'yaml' }).value
 
   useEffect(() => {
     if (titleInView !== t) setTitleInView(titleInView)
@@ -151,7 +157,25 @@ export default function Home() {
       {/* data from fetch */}
       <div className="mt-4 px-5 sm:px-8 lg:px-16">
         <div className="mx-auto max-w-5xl">
-          {code && <PreviewEditor code={code} />}
+          {code && (
+            <div className={cn('my-4 rounded border border-neutral-900 dark:border-neutral-800')}>
+              {/* header */}
+              <div className="flex items-center justify-between bg-neutral-800 px-4 py-2 dark:bg-neutral-900">
+                <h2 className="flex max-w-[80%] items-center space-x-2">
+                  <LiaFileInvoiceSolid className="h-4 w-auto text-white" aria-hidden />
+                  <span className="text-neutral-400">docker-compose.yaml</span>
+                </h2>
+                <CopyButton
+                  value={stripHtml(highlightedCode)}
+                  className={cn('border-none text-white opacity-50 hover:bg-transparent hover:opacity-100')}
+                />
+              </div>
+              {/* code */}
+              <pre className="overflow-x-auto bg-neutral-900 !font-sans text-white px-2 py-4 dark:bg-black sm:px-4">
+                <Typeit dangerouslySetInnerHTML={{ __html: highlightedCode }} options={{ breakLines: true }} />
+              </pre>
+            </div>
+          )}
           {error && (
             <div className="flex flex-col gap-4">
               <p className="text-red-500">{error.message}</p>

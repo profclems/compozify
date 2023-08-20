@@ -10,7 +10,10 @@ interface Store {
   setTitleInView: (value: boolean) => void
   compose: (command: string) => Promise<void>
   code?: string
+  previousCode?: string
   menu: boolean
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  setTypingInstance: (value: any) => void
   setMenu: (value: boolean) => void
   error?: Err
 }
@@ -25,6 +28,8 @@ const StoreContext = createContext<Store>({
   setTitleInView: () => {},
   compose: async () => {},
   code: undefined,
+  previousCode: undefined,
+  setTypingInstance: () => {},
   menu: false,
   setMenu: () => {}
 })
@@ -35,6 +40,8 @@ export function StoreProvider({ children }: { children: ReactNode }) {
   const [code, setCode] = useState<undefined | string>(undefined)
   const [menu, setMenu] = useState(false)
   const [error, setError] = useState<undefined | Err>(undefined)
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const [_typingInstace, setTypingInstance] = useState<any>(null)
 
   useEffect(() => {
     const e = setTimeout(() => setError(undefined), 5000)
@@ -91,9 +98,10 @@ export function StoreProvider({ children }: { children: ReactNode }) {
       compose,
       code,
       menu,
-      setMenu
+      setMenu,
+      setTypingInstance
     }),
-    [code, compose, titleInView, menu]
+    [titleInView, compose, code, menu]
   )
 
   if (!mounted) return null
